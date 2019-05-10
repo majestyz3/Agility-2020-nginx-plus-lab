@@ -1,0 +1,34 @@
+Lab – Build a NGINX+ Container [OPTIONAL]
+-----------------------------------------
+
+When deploying NGINX+ in a Kubernetes cluster you will need to build a local
+container that has NGINX+.
+
+The following is an optional lab exercise.  We have pre-built an image for your
+use in the lab environment and made the necessary modifications to pull from the
+pre-built repository.
+
+Retrieve NGINX License Cert/Key
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+On the K8S Cluster in the directory ``~/kubernetes-ingress`` you will need to 
+place a copy of ``nginx-repo.crt`` and ``nginx-repo.key`` that you obtain from
+the NGINX Customer portal.
+
+We have already provided you a copy of these files.  Verify that you can see the 
+files.
+
+.. code:: 
+  
+  ubuntu@kmaster:~$ ls ~/kubernetes-ingress/nginx-repo.*
+  /home/ubuntu/kubernetes-ingress/nginx-repo.crt  /home/ubuntu/kubernetes-ingress/nginx-repo.key
+
+Build an image and push to a private repo
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The following resource should be used when pushing to a private repo:
+
+https://github.com/nginxinc/kubernetes-ingress/tree/master/build
+
+In the UDF demo environment the address of the internal registry is registry.internal:30500 
+and the user credentials are "registry:registry".

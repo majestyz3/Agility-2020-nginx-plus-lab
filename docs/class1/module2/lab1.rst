@@ -30,6 +30,7 @@ Create the Base Configuration
 
 .. code:: 
   
+  sudo mv /etc/nginx/conf.d/default.conf /etc/nginx/conf.d/default.conf.old && \
   sudo bash -c 'cat > /etc/nginx/conf.d/labExample.conf' <<EOF
   upstream f5App { 
       server docker.nginx-udf.internal:8080;  

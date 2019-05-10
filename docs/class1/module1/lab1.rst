@@ -1,95 +1,71 @@
-Deploying an Application in Kubernetes
+Installing NGINX Plus
 --------------------------------------
 
-This exercise will cover the basics of deploying an application in Kubernetes.
+This exercise will cover installation of NGINX Plus in a standalone (CentOS7) instance.
 
-Deploy an application
-~~~~~~~~~~~~~~~~~~~~~
+**Perform these tasks from the NGINX Plus Master instance.**
 
-From the K8S Master node.
+Repository Certificate and Key
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Typically, a customer would log into the NGINX Plus Customer Portal and download thier nginx-repo.crt and nginx-repo.key files. 
+These files are used to authenticate to the repository in order to retrieve the NGINX Plus package for installation.  
+For this lab the necessary cert and key have already been provided on the instance in **/etc/ssl/nginx**.
+
+Install Prerequisites
+~~~~~~~~~~~~~~~~~~~~
 
 .. code:: shell
 
-  kubectl run coffee --image=nginxdemos/hello:plain-text --port=80 --replicas=2 --labels="app=coffee"
+  sudo yum install ca-certificates
 
-You can also opt to run
+Retrieve and Add the Repository
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code:: shell
 
-  kubectl create -f - <<'EOF'
-  apiVersion: extensions/v1beta1
-  kind: Deployment
-  metadata:
-    name: coffee
-  spec:
-    replicas: 2
-    selector:
-      matchLabels:
-        app: coffee
-    template:
-      metadata:
-        labels:
-          app: coffee
-      spec:
-        containers:
-        - name: coffee
-          image: nginxdemos/hello:plain-text
-          ports:
-          - containerPort: 80
-  EOF
-  
-These are both the same commands.  The second method is more commonly how you would deploy a service (from a YAML file), but it is possible to create a deployment using the CLI as well.
+  sudo wget -P /etc/yum.repos.d https://cs.nginx.com/static/files/nginx-plus-7.repo
 
-Verify your application is running
+Repository URLs will vary depending on your OS and package manager.
+
+Install the NGINX Plus Package
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. code:: shell
+
+  sudo yum install nginx-plus
+
+Enable NGINX Plus to Start on Boot
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Run the following command to see a list of pods that are running.
+.. code:: shell
+
+  sudo systemctl enable nginx.service
+
+Verify NGINX Plus is running
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The command:
 
 .. code:: shell
 
-  kubectl get po
-  
-You should see output similar to:
+  systemctl status nginx.service
+
+Output should contain text similiar to:
 
 .. code:: shell
 
-  ubuntu@kmaster:~$ kubectl get po
-  NAME                                    READY   STATUS    RESTARTS   AGE
-  coffee-bbd45c6-6ptzj                    1/1     Running   0          2m18s
-  coffee-bbd45c6-blhck                    1/1     Running   0          2m18s
+  ● nginx.service - NGINX Plus - high performance web server
+   Active: active (running) since Fri 2019-05-10 12:08:14 UTC; 2min 18s ago
 
-Add the "-o wide" command to see the pod IP addresses
+Additionally, you should be able to curl to the default placeholder page:
 
 .. code:: shell
 
-  kubectl get po -o wide
-  
-Expected output:
-
-.. code:: shell
-  
-  ubuntu@kmaster:~$ kubectl get po -o wide
-  NAME                                    READY   STATUS    RESTARTS   AGE     IP            NODE      NOMINATED NODE   READINESS GATES
-  coffee-bbd45c6-6ptzj                    1/1     Running   0          3m11s   10.244.2.84   knode2    <none>           <none>
-  coffee-bbd45c6-blhck                    1/1     Running   0          3m11s   10.244.1.91   knode1    <none>           <none>
-  
-.. NOTE:: Observe that the pods are running on separate nodes (knode1 and knode2) and that the IP addresses are outside the routable range of the environment (in UDF it would be 10.1.0.0/16).
-
-Use the ``curl`` command to test whether your application is running.
-
-.. code:: shell
-  
-  curl [pod IP]
-  
-For example (your POD IP address will be different)
+  curl http://localhost
 
 .. code:: shell
 
-  ubuntu@kmaster:~$ curl 10.244.2.84
-  Server address: 10.244.2.84:80
-  Server name: coffee-bbd45c6-6ptzj
-  Date: 09/May/2019:14:42:33 +0000
-  URI: /
-  Request ID: 8f7bfd37fdc6b4b24403c92d196494be
+  NGINX DEFAULT PAGE 
+
   
-Congratulations you have deployed an application!
+NGINX Plus is now installed and running on the NGINX Plus Master instance.

@@ -1,155 +1,108 @@
-Deploy the NGINX+ Ingress Controller
-------------------------------------
+Lab - Health Checks
+--------------------------
 
-This lab will deploy an NGINX+ Ingress Controller.
+For passive health checks, NGINX and NGINX Plus monitor transactions as they happen, and try to resume failed connections. If the transaction still cannot be resumed, NGINX open source and NGINX Plus mark the server as unavailable and temporarily stop sending requests to it until it is marked active again.
 
-In the lab environment NGINX+ has been already built into an image and is
-available in a private repository.  The deployment files have also been modified
-to make use of the private repository when deploying NGINX+ Ingress Controller.
-
-The following steps are adapted from: https://github.com/nginxinc/kubernetes-ingress/blob/master/docs/installation.md
-
-Change directory into the "deployments" directory
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-On the K8S Master host you will need to change into the ``~/kubernetes-ingress/deployments/``
-directory.
+The conditions under which an upstream server is marked unavailable are defined for each upstream server with parameters to the server directive in the upstream block:
 
 .. code:: shell
 
-  $ cd ~/kubernetes-ingress/deployments/
+  upstream backend {
+      server backend1.example.com;
+      server backend2.example.com max_fails=3 fail_timeout=30s;
+  }
 
-Create NameSpace and Service Account
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Active Health Checks
+~~~~~~~~~~~~~~~~~~~~
+NGINX Plus can periodically check the health of upstream servers by sending special health‑check requests to each server and verifying 
+the correct response.
 
-The NGINX+ Ingress Controller runs in an isolated NameSpace and uses a separate 
-ServiceAccount for accessing the Kubernetes API.  To create this namespace and
-service account.
+To enable active health checks:
+
+In the location that passes requests (proxy_pass) to an upstream group, include the *health_check* directive. 
 
 .. code:: shell
 
-  $ kubectl apply -f common/ns-and-sa.yaml
+  server {
+      location / {
+          proxy_pass http://backend;
+          health_check;
+      }
+  }
 
-Install Default SSL Cert/Key
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+By default, every five seconds NGINX Plus sends a request for “/” to each server in the backend group. 
+If any communication error or timeout occurs (the server responds with a status code outside the range from 200 through 399) the health check fails. The server is marked as unhealthy, and NGINX Plus does not send client requests to it until it once again passes a health check. To allow the worker processes to use the same set of counters to keep track of responses from the servers in an upstream group use a shared memory zone (``zone``).
+
+*health_check* supports the following parameters:
+- port
+- interval
+- fails
+- passes
+- uri
+- match
+
   
-The Ingress Controller will use a "default" SSL certificate for requests that 
-are not configured to use an explicit certificate.  The following loads the 
-default certificate into Kubernetes.
-
-.. code:: shell
-
-  $ kubectl apply -f common/default-server-secret.yaml
-  
-.. NOTE:: from NGINX Docs "The default server returns the Not Found page with the 404 status code for all requests for domains for which there are no Ingress rules defined. For testing purposes we include a self-signed certificate and key that we generated. However, we recommend that you use your own certificate and key."
-
-Create a NGINX ConfigMap
-~~~~~~~~~~~~~~~~~~~~~~~~
-
-NGINX+ makes use of a Kubernetes ConfigMap to store customizations to the NGINX+ 
-configuration.
-
-.. code:: shell
-
-  $ kubectl apply -f common/nginx-config.yaml
-
-Configure RBAC
-~~~~~~~~~~~~~~
-
-In this lab environment RBAC is enabled and you will need to enable access
-from the NGINX Service Account to the Kubernetes API.
-
-.. code:: shell
-
-  $ kubectl apply -f rbac/rbac.yaml
-
-.. NOTE:: The ``ubuntu`` user is accessing the Kubernetes Cluster as a "Cluster Admin" and has privileges 
-          to apply RBAC permissions.
-
-Create a Deployment
-~~~~~~~~~~~~~~~~~~~
-
-We will be deploying NGINX+ as a deployment.  It is also possible to deploy as 
-a "daemonset" on every node (or subset).  
-
-The following are Eric's opinion on the differences:
-
-Advantages of deployment: flexible allocation (not limited to 1 per node).
-
-Advantages of daemonset: fixed allocation (better if you want to expose port 80/443 directly)
-
-.. code:: shell
-
-  $ kubectl apply -f deployment/nginx-plus-ingress.yaml
-  
-.. NOTE:: The lab environment has modified ``nginx-plus-ingress.yaml`` and 
-          created resources to support it.  Normally you **MUST** modify 
-          this file before deploying.
-
-Verify your deployment
-~~~~~~~~~~~~~~~~~~~~~~
-
-Make sure that everything is running.  Add ``-n`` to specify the correct
-namespace.
-
-.. code:: shell
-
-  $  kubectl get po -n nginx-ingress
-  
-You should see output similar to:
-
-.. code:: text 
-  
-  NAME                            READY   STATUS    RESTARTS   AGE
-  nginx-ingress-56454fb6d-c5hl6   1/1     Running   0          44m
-  
-Expose NGINX+ via NodePort
+Defining Custom Conditions
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Finally we need to enable external access to the Kubernetes cluster.
-
-In the previous lab we made use of a "Cluster" service that was only
-accessible within the Kubernetes cluster.  We will create a NodePort
-service to enable access from outside the cluster.  This will create
-a ephemeral port that will map to port 80/443 on the NGINX+ Ingress
-Controller.
+You can set custom conditions that the response must satisfy for the server to pass the health check. 
+The conditions are defined in a ``match`` block, which is referenced in the match parameter of the health_check directive.
 
 .. code:: shell
 
-  $ kubectl create -f service/nodeport.yaml
+  http {
+      #...
+      match server_ok {
+          # tests are here
+      }
+  }
 
-.. _retrieve_nodeport:
-  
-Retrieve Node Port 
-~~~~~~~~~~~~~~~~~~
-
-We will next retrieve the port number that NGINX+ port 80 is exposed at.
-
-.. code:: shell
-
-  $ kubectl get svc -n nginx-ingress
-
-You should see output similar to (your port values will be different):
+Refer to the block from the health_check directive by specifying the *match* parameter and the name of the match block.
 
 .. code:: shell
 
-  ubuntu@kmaster:~/kubernetes-ingress/deployments$ kubectl get svc -n nginx-ingress
-  NAME            TYPE       CLUSTER-IP     EXTERNAL-IP   PORT(S)                      AGE
-  nginx-ingress   NodePort   10.98.14.232   <none>        80:32148/TCP,443:30661/TCP   5m34s
-  
-In the example above port 32148 maps to port 80 on NGINX+.
+  sudo bash -c 'cat > /etc/nginx/conf.d/labExample.conf' <<EOF
+  upstream f5App { 
+      least_conn;
+      zone f5App 64k;
+      server docker.nginx-udf.internal:8080;  
+      server docker.nginx-udf.internal:8081;  
+      server docker.nginx-udf.internal:8082;
+  }
 
-.. NOTE:: You will have a different port value!  Record the value for the 
-          next lab exercise.
+  upstream nginxApp { 
+      least_conn;
+      zone nginxApp 64k;
+      server docker.nginx-udf.internal:8083;  
+      server docker.nginx-udf.internal:8084;  
+      server docker.nginx-udf.internal:8085;
+  }
 
-Access NGINX+ From Outside the Cluster
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  match f5_ok {
+      status 200;
+  }
 
-From the Windows JumpHost open up the Chrome browser and go to:
+  match nginx_ok {
+      status 200-399;
+      body !~ "maintenance mode";
+  }
 
-  ``http://10.1.20.20:[Previous Recorded Port Number]``
+  server {
+      listen 80;
+      root /usr/share/nginx/html;
+      error_log /var/log/nginx/LabApp.error.log info;  
+      access_log /var/log/nginx/LabApp.access.log combined;
+      status_zone default;
 
-You should see something like:
+      location /f5/ {
+          proxy_pass http://f5App/;
+          health_check match=f5_ok;
+      }
+      location /nginx/ {
+          proxy_pass http://nginxApp/;
+          health_check match=nginx_ok;
+      }
+  }
+  EOF
 
 .. image:: /_static/class1-module2-lab2-nginx-plus-nodeport.png
 

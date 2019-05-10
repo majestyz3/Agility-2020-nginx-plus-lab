@@ -1,16 +1,18 @@
-Exposing Services in Kubernetes
+NGINX Plus Introduction
 ================================
 
 .. TODO:: Need class description
 
-In this class we will deploy a Kubernetes Service and expose it using NodePort.
+In this class we will cover the following NGINX Plus concepts:
 
-- Downloading a |f5| |bip| |ve|
-- Installing a |bip| |ve| image on a hypervisor
-- Installing a |f5| |bip| Appliance
-- Powering on a |bip| Appliance
+- Load Balancing Configuration
+- ADC Features
+  - Session Persistence
+  - Caching
+- Dashboard and API
+- Service Discovery
 
-Expected time to complete: **3 hours**
+Expected time to complete: **1 hour**
 
 .. toctree::
    :maxdepth: 1

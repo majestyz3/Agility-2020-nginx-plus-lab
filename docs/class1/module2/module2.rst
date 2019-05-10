@@ -1,8 +1,7 @@
-Module – Deploying NGINX+ Ingress
+Module – NGINX Plus Load Balancing Configuration
 =================================
 
-In this module you will learn how to build a local container that has
-NGINX+ and use it to deploy a Kubernetes Ingress Resource.
+In this module you will learn about the load balancing features and symantics of NGINX Plus.
 
 .. toctree::
    :maxdepth: 1

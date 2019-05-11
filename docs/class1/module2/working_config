@@ -1,3 +1,28 @@
+sudo bash -c 'cat > /etc/nginx/conf.d/app.conf' <<EOF
+resolver docker.nginx-udf.internal:8600 valid=2s;
+resolver_timeout 2s;
+
+upstream sd_demo {
+    zone upstream_sd_demo 64k;
+    server service.consul service=http resolve;
+}
+
+match 200_status {
+    status 200;
+}
+
+server {
+    listen 80;
+    server_name sd-demo.nginx-udf.internal;
+    status_zone sd-demo;
+
+    location / {
+        proxy_pass http://sd_demo;
+        health_check interval=2s match=200_status;
+    }
+}
+EOF
+
 sudo bash -c 'cat >> /etc/nginx/nginx.conf' <<EOF
 stream {
 

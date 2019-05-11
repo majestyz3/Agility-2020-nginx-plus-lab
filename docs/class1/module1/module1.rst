@@ -1,4 +1,4 @@
-Module - Installing NGINX Plus
+Installing NGINX Plus
 =====================================================================
 
 In this module you will learn how to install NGINX Plus.

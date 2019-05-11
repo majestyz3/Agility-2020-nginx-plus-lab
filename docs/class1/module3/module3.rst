@@ -1,4 +1,4 @@
-Module – Shared Memory Zone Synchronization
+Shared Memory Zone Synchronization
 ===========================================
 
 In this module you will learn about synchronization of shared memory zones across clusters of NGINX Plus instances.

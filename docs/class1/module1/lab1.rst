@@ -11,35 +11,18 @@ Typically, a customer would log into the NGINX Plus Customer Portal and download
 These files are used to authenticate to the repository in order to retrieve the NGINX Plus package for installation.  
 For this lab the necessary cert and key have already been provided on the instance in **/etc/ssl/nginx**.
 
-Install Prerequisites
+Install NGINX Plus
 ~~~~~~~~~~~~~~~~~~~~
 
 .. code:: shell
 
-  sudo yum install ca-certificates
+  sudo yum install -y ca-certificates && \
+  sudo wget -P /etc/yum.repos.d https://cs.nginx.com/static/files/nginx-plus-7.repo && \
+  sudo yum install -y nginx-plus && \
+  sudo systemctl enable nginx.service && \
+  sudo systemctl start nginx.service
 
-Retrieve and Add the Repository
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. code:: shell
-
-  sudo wget -P /etc/yum.repos.d https://cs.nginx.com/static/files/nginx-plus-7.repo
-
-Repository URLs will vary depending on your OS and package manager.
-
-Install the NGINX Plus Package
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. code:: shell
-
-  sudo yum install nginx-plus
-
-Enable NGINX Plus to Start on Boot
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. code:: shell
-
-  sudo systemctl enable nginx.service
+TALK THROUGH WHAT EACH STEP IS DOING
 
 Verify NGINX Plus is running
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -1,4 +1,4 @@
-Module – Explore the Dashboard and API
+Explore the Dashboard and API
 ===========================================
 
 In this module will introduce the NGINX Plus Dashboard and API. The module will walk through allowing access to the each, show what stats are avaialble in the dashboard,

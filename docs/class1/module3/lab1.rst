@@ -20,3 +20,9 @@ Each NGINX instance in a cluster needs to be configured to listen and exchange d
     }
     EOF
 
+The nginx proc must be restarted for the zone sync to initiate.
+
+.. code:: shell 
+
+    sudo systemctl restart nginx
+

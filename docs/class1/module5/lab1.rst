@@ -23,10 +23,12 @@ Service state is then reported to Consul.
 On the ``Windows Jump Host`` use the Chrome bookmark to view the Consul web interface.
 
 .. image:: /_static/consul.png
+   :width: 600pt
 
 The service used in this demo is named ``http``.
 
 .. image:: /_static/consul_service.png
+   :width: 350pt
 
 NGINX Plus Configuration
 ~~~~~~~~~~~~~~~~~~~~~~~~
@@ -69,7 +71,7 @@ NGINX Plus Configuration
 View Upstream in Dashboard
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-**Find the Upstream in the Dashboard named ``sd-demo``.**
+**Find the Upstream in the Dashboard named "sd-demo".**
 
 .. todo:: insert pic once names are updated.
 

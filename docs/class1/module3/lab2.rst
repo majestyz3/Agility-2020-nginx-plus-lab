@@ -6,6 +6,7 @@ One way to ensure common shared memory zones exist across the cluster is to sync
 Nginx provides a package/script for this task.
 
 .. image:: /_static/nginx-sync-sh.png
+   :width: 500pt
 
 .. NOTE:: The lab UDF image was already configured for ssh access (via keys) to all cluster members from the NGINX Plus Master.
 

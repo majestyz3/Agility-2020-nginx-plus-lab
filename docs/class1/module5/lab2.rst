@@ -17,7 +17,7 @@ The ``docker-compose`` command instructs docker to scale the ``http`` service to
 **Watch the ``sd-demo`` upstream in the dashboard.**
 
 .. image:: /_static/sd-upstream-full.png
-   :width: 400pt
+   :width: 500pt
 
 Scale the ``http`` service up or down as desired.
 

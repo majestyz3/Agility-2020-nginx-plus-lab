@@ -73,7 +73,8 @@ Swagger UI
 Swagger UI provides visual documentation of the Nginx Plus API generated from an OpenAPI spec. 
 The Swagger UI generated for the lab is fully functional -- ie. POST and PATCH examples will update the configuration.
 
-.. todo:: screenshot, check config 
+.. image:: /_static/plusdashboard.png
+   :width: 300pt
  
 Postman
 ^^^^^^^

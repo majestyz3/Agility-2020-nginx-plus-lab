@@ -1,23 +1,23 @@
 Scaling the Example Service
 -----------------------------------------
 
-This lab tests service discovery by scaling the sd-demo service.
+This lab tests service discovery by scaling the sd-demo service on the Docker Host.
 
 Service Scaling
 ~~~~~~~~~~~~~~~~~~~~
 
-.. note:: Execute these steps on the Docker Host instance.
+.. note:: Execute this command from the Docker Host instance.
 
 .. code:: shell
 
-    $ cd ~/udf-nginx-plus-service-discovery
-    $ docker-compose up --scale http=5 -d
+    docker-compose -f ~/udf-nginx-plus-service-discovery/docker-compose.yml up -d --scale http=5
 
 The ``docker-compose`` command instructs docker to scale the ``http`` service to 5 instances.
 
 **Watch the ``sd-demo`` upstream in the dashboard.**
 
-.. todo:: insert screenshot once names are updated.
+.. image:: /_static/sd-upstream-full.png
+   :width: 400pt
 
  Scale the ``http`` service up or down as desired.
 

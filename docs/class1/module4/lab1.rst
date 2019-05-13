@@ -28,7 +28,7 @@ This lab walks through configuring the Nginx Plus Dashboard and API.
         }
 
         location /swagger-ui/ {
-            root /usr/share/nginx/html/swagger-ui;
+            root /usr/share/nginx/html/;
             index index.html;
         }
     }

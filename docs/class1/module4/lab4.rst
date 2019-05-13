@@ -17,8 +17,8 @@ Nginx Plus provides a mechanism for keeping upstream state between reloads.
         state /var/lib/nginx/state/f5App.conf;
 
         sticky learn
-        create=$upstream_cookie__nginxPlusLab
-        lookup=$cookie__nginxPlusLab
+        create=\$upstream_cookie__nginxPlusLab
+        lookup=\$cookie__nginxPlusLab
         timeout=1h
         zone=client_sessions:1m sync;
     }

@@ -11,8 +11,8 @@ NGINX Plus can perform service discovery in several different ways.
 
 - `ZooKeeper`_
 
-This lab uses Hashicorp's Consul to capture service state (with the help of Registrator).
-NGINX Plus will then queries Consul for a DNS SRV record to determine appropiate upstream servers.
+This lab uses Hashicorp's `Consul`_ to capture service state (with the help of `Registrator`_).
+NGINX Plus queries Consul for DNS SRV records to determine appropiate upstream servers for a specified service.
 
 Docker Configuration
 ~~~~~~~~~~~~~~~~~~~~
@@ -22,13 +22,10 @@ Service state is then reported to Consul.
 
 On the ``Windows Jump Host`` use the Chrome bookmark to view the Consul web interface.
 
-.. image:: /_static/consul.png
+.. image:: /_static/consul1.png
    :width: 600pt
 
-The service used in this demo is named ``http``.
-
-.. image:: /_static/consul_service.png
-   :width: 350pt
+The service used in this demo is named ``http``. There are currently no instances of that service instantiated -- thus it does not appear in the service list.
 
 NGINX Plus Configuration
 ~~~~~~~~~~~~~~~~~~~~~~~~
@@ -40,7 +37,7 @@ NGINX Plus Configuration
 .. code:: shell
 
     sudo bash -c 'cat > /etc/nginx/conf.d/sdDemo.conf' <<EOF
-    resolver docker.nginx-udf.internal:53 valid=2s;
+    resolver docker.nginx-udf.internal:8600 valid=2s;
     resolver_timeout 2s;
 
     upstream sd-demo {
@@ -48,10 +45,8 @@ NGINX Plus Configuration
         server service.consul service=http resolve;
     }
 
-    match hello {
+    match 200OK {
         status 200;
-        header Content-Type = text/html;
-        body ~ "Hello";
     }
 
     server {
@@ -61,7 +56,7 @@ NGINX Plus Configuration
 
         location / {
             proxy_pass http://sd-demo;
-            health_check interval=2s match=hello;
+            health_check interval=2s match=200OK;
         }
     }
     EOF
@@ -73,12 +68,13 @@ View Upstream in Dashboard
 
 **Find the Upstream in the Dashboard named "sd-demo".**
 
-.. todo:: insert pic once names are updated.
+.. image:: /_static/sd-demo-upstream.png
 
-There are no upstream servers defined at this time.
+There are no upstream servers defined at this time (as there are no service instances).
 
+.. _`DNS based`: https://www.nginx.com/blog/dns-service-discovery-nginx-plus/
 .. _`Consul APIs`: https://www.nginx.com/blog/service-discovery-with-nginx-plus-and-consul/
 .. _`etcd`: https://www.nginx.com/blog/service-discovery-nginx-plus-etcd/
 .. _`ZooKeeper`: https://www.nginx.com/blog/service-discovery-nginx-plus-zookeeper/
-
-.. todo:: add link for generic DNS based upstream
+.. _`Consul`: https://hub.docker.com/_/consul
+.. _`Registrator`: https://hub.docker.com/r/gliderlabs/registrator

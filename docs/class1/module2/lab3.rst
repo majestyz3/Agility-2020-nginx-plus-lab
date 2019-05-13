@@ -57,12 +57,13 @@ For example:
   }
 
 Refer to the block from the health_check directive by specifying the ``match`` parameter and the name of the match block.
+To keep the configuration tidy, ``match`` blocks will kept in their file apart from upstream blocks and server blocks.
 
-.. note:: Execute these steps on the NGINX Plus Master Instance.
+.. note:: Execute these commands on the NGINX Plus Master instance.
 
 .. code:: shell
 
-    sudo bash -c 'cat > /etc/nginx/conf.d/labApp.conf' <<EOF
+    sudo bash -c 'cat > /etc/nginx/conf.d/labMatch.conf' <<EOF
     match f5_ok {
         status 200;
     }
@@ -72,6 +73,9 @@ Refer to the block from the health_check directive by specifying the ``match`` p
         body !~ "maintenance mode";
     }
 
+.. code:: shell
+
+    sudo bash -c 'cat > /etc/nginx/conf.d/labApp.conf' <<EOF
     server {
         listen 80 default_server;
         server_name f5-app.nginx-udf.internal bigip-app.nginx-udf.internal;
@@ -82,9 +86,6 @@ Refer to the block from the health_check directive by specifying the ``match`` p
         location / {
             proxy_pass http://f5App;
             health_check match=f5_ok;
-
-            proxy_cache f5AppCache;
-            proxy_cache_purge $purge_method;
         }
     }
 
@@ -105,4 +106,4 @@ Refer to the block from the health_check directive by specifying the ``match`` p
         }
     }
 
-.. note:: Reload the Nginx Configuration (```sudo nginx -t && sudo nginx -s reload```)
+.. note:: Reload the Nginx Configuration (``sudo nginx -t && sudo nginx -s reload``)

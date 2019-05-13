@@ -3,14 +3,16 @@ Lab – Service Discovery Setup
 
 NGINX Plus can perform service discovery in several different ways. 
 
-Service Discovery for NGINX Plus Using Consul APIs
-Service Discovery for NGINX Plus with etcd
-Service Discovery for NGINX Plus with ZooKeeper
+- `DNS based`_
 
+- `Consul APIs`_
 
-.. TODO:: provide link/more info
-In the this demo we're using Hashicorp's Consul to capture service state (with the help of Registrator).
-NGINX Plus will then query Consule for a DNS SRV record to determine appropiate upstream servers.
+- `etcd`_
+
+- `ZooKeeper`_
+
+This lab uses Hashicorp's Consul to capture service state (with the help of Registrator).
+NGINX Plus will then queries Consul for a DNS SRV record to determine appropiate upstream servers.
 
 Docker Configuration
 ~~~~~~~~~~~~~~~~~~~~
@@ -22,15 +24,16 @@ On the ``Windows Jump Host`` use the Chrome bookmark to view the Consul web inte
 
 .. image:: /_static/consul.png
 
-.. image:: /_static/consul_service.png
-
 The service used in this demo is named ``http``.
- 
+
+.. image:: /_static/consul_service.png
 
 NGINX Plus Configuration
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. note:: Execute these steps on the NGINX Plus Master Instance.
+**Define the upsteam, health check, and server block needed for the demo.**
+
+.. note:: Execute this command on the NGINX Plus Master instance.
 
 .. code:: shell
 
@@ -61,9 +64,19 @@ NGINX Plus Configuration
     }
     EOF
 
-.. note:: Reload the Nginx Configuration (```sudo nginx -t && sudo nginx -s reload```)
+.. note:: Reload the Nginx Configuration (``sudo nginx -t && sudo nginx -s reload``)
 
 View Upstream in Dashboard
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+**Find the Upstream in the Dashboard named ``sd-demo``.**
 
+.. todo:: insert pic once names are updated.
+
+There are no upstream servers defined at this time.
+
+.. _`Consul APIs`: https://www.nginx.com/blog/service-discovery-with-nginx-plus-and-consul/
+.. _`etcd`: https://www.nginx.com/blog/service-discovery-nginx-plus-etcd/
+.. _`ZooKeeper`: https://www.nginx.com/blog/service-discovery-nginx-plus-zookeeper/
+
+.. todo:: add link for generic DNS based upstream

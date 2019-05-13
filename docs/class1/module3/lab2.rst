@@ -2,16 +2,16 @@ Configuration Synchronization
 -----------------------------------------
 
 To be synchronized, shared memory zones must be identically named across Nginx Plus cluster members.
-One way to ensure we have common shared memory zones across the cluster is to synchronize the configuration.
+One way to ensure common shared memory zones exist across the cluster is to synchronize the configuration.
 Nginx provides a package/script for this task.
 
 .. image:: /_static/nginx-sync-sh.png
 
 .. NOTE:: The lab UDF image was already configured for ssh access (via keys) to all cluster members from the NGINX Plus Master.
 
-Create the configuration file ``/etc/nginx-sync.conf``.
+**Create the configuration file ``/etc/nginx-sync.conf``.**
 
-.. note:: Execute these steps on the NGINX Plus Master Instance.
+.. note:: Execute these steps on the NGINX Plus Master instance.
 
 .. code:: shell
 
@@ -21,9 +21,11 @@ Create the configuration file ``/etc/nginx-sync.conf``.
     EXCLUDE="default.conf"
     EOF
 
-Run nginx-sync.sh on the master to push configuration in ``CONFPATHS`` to the ``NODES``, omitting configuration files named in ``EXCLUDE``.
+The script will push configuration in ``CONFPATHS`` to the ``NODES``, omitting configuration files named in ``EXCLUDE``.
 
-.. note:: Execute these steps on the NGINX Plus Master Instance.
+**Run nginx-sync.sh.**
+
+.. note:: Execute these steps on the NGINX Plus Master instance.
 
 .. code:: shell
 
@@ -38,5 +40,5 @@ For example:
 
     curl http://plus2.nginx-udf.internal
 
-This request should resolve to the server block with ``default_server``.
+This request should resolve to the server block with ``default_server`` (the f5App).
 

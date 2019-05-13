@@ -2,7 +2,7 @@ Base Configuration
 -----------------------------------------
 
 The UDF lab blueprint provides several containers running web applications on the ``Docker Host`` instance.
-These containers will be used as ``upstreams`` (or ``pool members`` in F5 terminology) throughout the lab.
+These containers will be used as ``upstreams`` (or "pool members" in F5 terminology) throughout the lab.
 All necessary containers should be running when the UDF blueprint completes booting.
 
 Throughout the lab Nginx Plus configuration will be deployed directly from bash.
@@ -21,6 +21,7 @@ Frequently throughout this lab you will be asked to "reload the Nginx configurat
 The first command, ``nginx -t``, checks the configuration syntax. The second command, ``nginx -s reload``, reloads the configuration.
 
 .. image:: /_static/reload.png
+   :width: 500pt
 
 During the reload procedure, a ``SIGHUP`` is sent the kernel. The master Nginx process evaluates the new config and checks for ``emerg`` level errors.
 Lastly, new workers are forked while old workers gracefully shut down. This worker model is important to understand as some features require state sharing across the workers.
@@ -30,20 +31,18 @@ Blocks and Directives
 ~~~~~~~~~~~~~~~~~~~~~
 
 .. image:: /_static/confcontexts.png
+   :width: 500pt
 
 Nginx configurations are made up nested contexts. All contexts are a child of ``Main``. The top-level contexts are:
 
-Events
-  This context is used to set global options that affect how Nginx handles connections at a general level.
+- **Events**
+  - This context is used to set global options that affect how Nginx handles connections at a general level.
 
+- **HTTP**
+  - This lab focusses on using Nginx as a reverse proxy. Consequently, the ``http`` context will hold the majority of the configuration.
 
-HTTP
-  This lab focusses on using Nginx as a reverse proxy. Consequently, the ``http`` context will hold the majority of the configuration.
-
-
-Stream
-  The ``stream`` context provides options for TCP/UDP load balancing. This context will be used later to configure clustering between Nginx plus instances.
-
+- **Stream**
+  - The ``stream`` context provides options for TCP/UDP load balancing. This context will be used later to configure clustering between Nginx plus instances.
 
 This lab will focus mainly configuration blocks under the ``http`` context.
 
@@ -52,7 +51,7 @@ Create the Base Configuration
 
 Start by creating a basic load balancing configuration.
 
-.. note:: Execute this command on the Nginx Plus Master Instance.
+.. note:: Execute this command on the Nginx Plus Master instance.
 
 .. code:: 
   

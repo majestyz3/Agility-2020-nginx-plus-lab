@@ -3,7 +3,7 @@ Dashboard and API Configuration
 
 This lab walks through configuring the Nginx Plus Dashboard and API.
 
-Deploy the API and dashboard configuration.
+**Deploy the API and dashboard configuration.**
 
 .. note:: Execute these steps on the NGINX Plus Master Instance.
 

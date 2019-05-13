@@ -20,7 +20,7 @@ The Nginx Plus API has the following top level endpoints:
 
 These endpoints correspond with Nginx Plus build information, process info, connection statistics, configuration blocks, etc.
 
-**Explore the Nginx Plus API using one of the desired methods below.**
+**Explore the Nginx Plus API using at least one of the desired methods below.**
 
 Curl
 ^^^^
@@ -65,7 +65,7 @@ Curl
     "upstreams"
     ]
 
-**Id desired, query various endpoints under ``/api/4/http/``.**
+**If desired, query various endpoints under ``/api/4/http/``.**
 
 Swagger UI
 ^^^^^^^^^^

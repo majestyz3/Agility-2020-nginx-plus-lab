@@ -14,7 +14,7 @@ For this lab the necessary cert and key have already been provided on the instan
 Install Nginx Plus
 ~~~~~~~~~~~~~~~~~~~~
 
-.. note:: Execute these commands on the Nginx Plus Master instance.
+.. note:: Execute this command from the Nginx Plus Master instance.
 
 .. code:: shell
 
@@ -30,13 +30,13 @@ The Nginx service is set to ``enable`` to start on boot. The last command starts
 Verify Nginx Plus is running
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-**Check the service status from systemd.**
+.. note:: Execute these commands on the Nginx Plus Master instance.
 
-.. note:: Execute this command on the Nginx Plus Master instance.
+**Check the service status from systemd.**
 
 .. code:: shell
 
-  systemctl status nginx.service
+  systemctl status nginx
 
 **Verify the output shows the service running:**
 
@@ -45,15 +45,41 @@ Verify Nginx Plus is running
   ● nginx.service - Nginx Plus - high performance web server
    Active: active (running) since Fri 2019-05-10 12:08:14 UTC; 2min 18s ago
 
-For an additional check, you should be able to curl to the Nginx default placeholder page:
+**For an additional check, you should be able to curl to localhost port 80.**
 
 .. code:: shell
 
   curl http://localhost
 
+**Verify the output is the default Nginx placeholder page.**
+
 .. code:: shell
 
-  Nginx DEFAULT PAGE 
+  <!DOCTYPE html>
+  <html>
+  <head>
+  <title>Welcome to nginx!</title>
+  <style>
+      body {
+          width: 35em;
+          margin: 0 auto;
+          font-family: Tahoma, Verdana, Arial, sans-serif;
+      }
+  </style>
+  </head>
+  <body>
+  <h1>Welcome to nginx!</h1>
+  <p>If you see this page, the nginx web server is successfully installed and
+  working. Further configuration is required.</p>
+
+  <p>For online documentation and support please refer to
+  <a href="http://nginx.org/">nginx.org</a>.<br/>
+  Commercial support is available at
+  <a href="http://nginx.com/">nginx.com</a>.</p>
+
+  <p><em>Thank you for using nginx.</em></p>
+  </body>
+  </html>
 
   
 Nginx Plus is now installed and running on the Nginx Plus Master instance.

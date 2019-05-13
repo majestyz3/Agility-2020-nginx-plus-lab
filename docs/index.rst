@@ -14,7 +14,7 @@ This lab will survery NGINX Plus feature which differentiate the offering from N
 The UDF Blueprint called **TTT NGINX+ Lab** will give you access to the following infrastructure: 
 
 ===================        ==================  ==============================================
-  System                    Hostame                        Description
+  System                    Hostname                        Description
 ===================        ==================  ==============================================
   Windows Jump Host        ip-10-1-1-4          Windows JumpHost
   Docker Host              ip-10-1-1-5          Centos7 running DockerCE providing upstreams
@@ -23,6 +23,15 @@ The UDF Blueprint called **TTT NGINX+ Lab** will give you access to the followin
   NGINX Plus 3             ip-10-1-1-8          NGINX Plus Instance (for cluster demo)
   BIG-IP1                  ip-10-1-1-9          F5 BIG-IP
 ===================        ==================  ==============================================
+
+Here are the credentials needed for this lab.
+
+=================    ====================  =====================   ===================
+  System                  Hostname              User                    Password
+=================    ====================  =====================   ===================
+Windows Jump Host       ip-10-1-1-4             user                      user         
+BIG-IP1                 ip-10-1-1-9             admin                     admin
+=================    ====================  =====================   ===================
 
 
 .. toctree::

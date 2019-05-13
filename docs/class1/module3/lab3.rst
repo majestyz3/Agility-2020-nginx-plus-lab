@@ -30,8 +30,8 @@ Using runtime state sharing, this persistence information can be shared across t
         server docker.nginx-udf.internal:8082;
 
         sticky learn
-        create=$upstream_cookie__nginxPlusLab
-        lookup=$cookie__nginxPlusLab
+        create=\$upstream_cookie__nginxPlusLab
+        lookup=\$cookie__nginxPlusLab
         timeout=1h
         zone=client_sessions:1m sync;
     }
@@ -53,6 +53,8 @@ Using runtime state sharing, this persistence information can be shared across t
     }
     EOF
 
+.. note:: Reload the Nginx Configuration (``sudo nginx -t && sudo nginx -s reload``)
+
 Verify Runtime State Sharing
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -63,8 +65,11 @@ Verify Runtime State Sharing
 
 **Click on the ``BIG-IP App`` bookmark.**
 
- This request hits a BIG-IP virtual server. A pool configured for round robin load balancing containing the 3 Nginx Plus instances is attached.
-This response should have the *Set-Cookie* header for the ``_nginxPlusLab`` cookie. Take note of the ``X-Lab-NGINX`` and ``X-Lab-Origin`` headers.
+This request hits a BIG-IP virtual server.
+A pool configured for round robin load balancing containing the 3 Nginx Plus instances is attached.
+This response should have the *Set-Cookie* header for the ``_nginxPlusLab`` cookie.
+
+Take note of the ``X-Lab-NGINX`` and ``X-Lab-Origin`` headers.
 The ``X-Lab-NGINX`` header shows which Nginx instance was the result of the BIG-IP's load balancing decision.
 The ``X-Lab-Origin`` header shows the docker container chosen by Nginx Plus's load balancing.
 

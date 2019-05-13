@@ -34,19 +34,23 @@ Upstream Features: Selection Algorithm, Weight
 .. note:: Reload the Nginx Configuration (``sudo nginx -t && sudo nginx -s reload``)
 
 The basic declaration didn't specify a selection algorithm (ie. load balacing method) so Round Robin was used. 
-Nginx support `Round Robin`_, `Hash`_, `IP Hash`_, and `Least Connections`_ selection algorithms. Nginx Plus adds the `Least Time`_ algorithm.
+Nginx supports `Round Robin`_, `Hash`_, `IP Hash`_, and `Least Connections`_ selection algorithms. Nginx Plus adds the `Least Time`_ algorithm.
 
 ``Weight`` is a similiar concept as ratio load balancing with F5 products.
 In this example, the container listening on port 8080 is weighted 5 times heavier than the other upstream servers. 
 
-Verify the configuration. On the ``Windows Jump Host`` reload the ``F5 App`` several times paying attention to the ``Server IP`` field on the page. 
+**Verify the configuration.**
+
+On the ``Windows Jump Host`` reload the ``F5 App`` several times paying attention to the ``Server IP`` field on the page.
+One container should be weighted heavier than the others -- this weighting will likely not be as pronounced as expected.
+In this configuration, ``weight`` is enforced on a per-worker basis.
 
 Multiple Upstreams, Server Blocks, and a Shared Memory Zone
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 This lab will end up using several upstreams. In order to keep the configuration size managable, these will be stored in a seperate file. 
 
-.. note:: Execute these steps on the Nginx Plus Master Instance.
+.. note:: Execute these steps on the Nginx Plus Master instance.
 
 .. code:: shell
 
@@ -113,13 +117,16 @@ Next, the advanced configuration will define multiple server blocks (and some wi
             proxy_pass http://nginxApp;
         }
     }
+    EOF
 
 .. note:: Reload the Nginx Configuration (``sudo nginx -t && sudo nginx -s reload``)
 
 In this example, multiple server blocks are defined listening on the same port. 
 When multiple server blocks match a request, Nginx compares the request ``Host`` header to the ``server_name`` directive.
 If no ``server_name`` match is found the server block marked ``default_server`` will be used.
-In the last server block, there are multiple locations defined. Nginx matches the URI against the most specific ``location`` and then proxies the request to the defined upstream.
+
+In the last server block, there are multiple locations defined.
+Nginx matches the URI against the most specific ``location`` and then proxies the request to the defined upstream.
 
 The ``status_zone`` directive allow workers to collect and aggregate server block statistics. Multiple ``server`` blocks could be part of the same ``status_zone``.
 

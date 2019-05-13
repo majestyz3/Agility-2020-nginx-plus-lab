@@ -25,8 +25,6 @@ The script will push configuration in ``CONFPATHS`` to the ``NODES``, omitting c
 
 **Run nginx-sync.sh.**
 
-.. note:: Execute these steps on the NGINX Plus Master instance.
-
 .. code:: shell
 
     sudo yum install -y nginx-sync && \

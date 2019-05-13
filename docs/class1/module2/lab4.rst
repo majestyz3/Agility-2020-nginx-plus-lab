@@ -5,14 +5,14 @@ Nginx and Nginx Plus are commonly deployed as a caching tier between a load bala
 
 .. image:: /_static/cache-flow.png
 
-This lab explores a simple caching configuration. Detailed information about caching configuration directives can be found here_. 
-In the lab's simple example, Nginx Plus will cache content by respecting the ``Cache-Control`` header in the response.
-Content with a ``Cache-Control`` header containing a ``max-age=0`` will not be cached by default.
+This lab explores a simple caching configuration. Detailed information about caching configuration directives can be found in the `admin guide`_. 
+In the lab example, Nginx Plus will cache content by respecting the ``Cache-Control`` header in the response.
+Content with a ``Cache-Control`` header containing ``max-age=0`` will not be cached by default.
 
 Add a cache
 ~~~~~~~~~~~
 
-**Update the configuration to define a proxy_cache and a method for purging the cache.**
+**Update the configuration to define a "proxy_cache" and a method for purging the cache.**
 
 .. note:: Execute this command on the NGINX Plus Master instance.
 
@@ -21,7 +21,7 @@ Add a cache
     sudo bash -c 'cat > /etc/nginx/conf.d/labApp.conf' <<EOF
     proxy_cache_path /tmp/cache keys_zone=f5AppCache:10m inactive=60m;
 
-    map $request_method $purge_method {
+    map \$request_method \$purge_method {
         PURGE 1;
         default 0;
     }
@@ -32,14 +32,14 @@ Add a cache
         error_log /var/log/nginx/f5App.error.log info;  
         access_log /var/log/nginx/f5App.access.log combined;
         status_zone f5App;
-        add_header X-Lab-NGINX $hostname;
+        add_header X-Lab-NGINX \$hostname;
 
         location / {
             proxy_pass http://f5App;
             health_check match=f5_ok;
 
             proxy_cache f5AppCache;
-            proxy_cache_purge $purge_method;
+            proxy_cache_purge \$purge_method;
         }
     }
 
@@ -89,5 +89,7 @@ Invalidating Cached items
 
 An expected HTTP response code for cache invalidating requests is "*HTTP/1.1 204 No Content*".
 
-.. _here: https://docs.nginx.com/nginx/admin-guide/content-cache/content-caching/
+.. todo:: Show cache hits and purging.
+
+.. _`admin guide`: https://docs.nginx.com/nginx/admin-guide/content-cache/content-caching/
 

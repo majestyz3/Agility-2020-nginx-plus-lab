@@ -5,7 +5,7 @@ This lab walks through configuring the Nginx Plus Dashboard and API.
 
 **Deploy the API and dashboard configuration.**
 
-.. note:: Execute these steps on the NGINX Plus Master Instance.
+.. note:: Execute this command on the NGINX Plus Master instance.
 
 .. code:: shell
 
@@ -34,7 +34,7 @@ This lab walks through configuring the Nginx Plus Dashboard and API.
     }
     EOF
 
-.. note:: Reload the Nginx Configuration (```sudo nginx -t && sudo nginx -s reload```)
+.. note:: Reload the Nginx Configuration (``sudo nginx -t && sudo nginx -s reload``)
 
 Typically, the Nginx API is exposed on port 8080 and some form of authentication is configured.
 This lab uses a ``server_name`` directive and does not implement security.

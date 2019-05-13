@@ -30,7 +30,7 @@ The NGINX service is set to ``enable`` so it will start on boot and then started
 Verify NGINX Plus is running
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. note:: Perform these steps from the NGINX Plus Master Instance.
+.. note:: Execute this command on the NGINX Plus Master Instance.
 
 .. code:: shell
 

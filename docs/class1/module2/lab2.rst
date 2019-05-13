@@ -1,14 +1,14 @@
 Incrementally More Useful Configurations
 --------------------------
 
-The basic configuration was missing several crucial declarations needed for a useful reverse proxy.
+The basic configuration was missing several crucial directives needed for a useful reverse proxy.
 This lab will incrementally build a more advanced and useful configuration which takes advantage of Nginx Plus features.
 
 
 Upstream Features: Selection Algorithm, Weight
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. note:: Execute these steps on the NGINX Plus Master Instance.
+.. note:: Execute this command on the Nginx Plus Master Instance.
 
 .. code:: shell
 
@@ -31,7 +31,7 @@ Upstream Features: Selection Algorithm, Weight
 }
   EOF
 
-.. note:: Reload the Nginx Configuration (```sudo nginx -t && sudo nginx -s reload```)
+.. note:: Reload the Nginx Configuration (``sudo nginx -t && sudo nginx -s reload``)
 
 The basic declaration didn't specify a selection algorithm (ie. load balacing method) so Round Robin was used. 
 Nginx support `Round Robin`_, `Hash`_, `IP Hash`_, and `Least Connections`_ selection algorithms. Nginx Plus adds the `Least Time`_ algorithm.
@@ -46,7 +46,7 @@ Multiple Upstreams, Server Blocks, and a Shared Memory Zone
 
 This lab will end up using several upstreams. In order to keep the configuration size managable, these will be stored in a seperate file. 
 
-.. note:: Execute these steps on the NGINX Plus Master Instance.
+.. note:: Execute these steps on the Nginx Plus Master Instance.
 
 .. code:: shell
 
@@ -77,12 +77,12 @@ This lab will end up using several upstreams. In order to keep the configuration
     }
     EOF
 
-This example defines the ``zone`` directive. With Nginx weights are managed independently by each worker process. Nginx Plus uses a shared memory segment for upstream data 
+This example defines the ``zone`` directive. Nginx manages weights independently per each worker process. Nginx Plus uses a shared memory segment for upstream data 
 (configured with the zone directive), so weights are shared between workers and traffic is distributed more accurately across the instance.
 
 Next, the advanced configuration will define multiple server blocks (and some will have multiple locations).
 
-.. note:: Execute these steps on the NGINX Plus Master Instance.
+.. note:: Execute this command on the Nginx Plus Master Instance.
 
 .. code:: shell
 
@@ -114,7 +114,7 @@ Next, the advanced configuration will define multiple server blocks (and some wi
         }
     }
 
-.. note:: Reload the Nginx Configuration (```sudo nginx -t && sudo nginx -s reload```)
+.. note:: Reload the Nginx Configuration (``sudo nginx -t && sudo nginx -s reload``)
 
 In this example, multiple server blocks are defined listening on the same port. 
 When multiple server blocks match a request, Nginx compares the request ``Host`` header to the ``server_name`` directive.

@@ -1,4 +1,14 @@
-Lab – Explore the Dashboard
+Explore the Dashboard
 -----------------------------------------
 
-This lab walks through configuring the NGINX Plus Dashboard and API.
+Use the provided bookmark on the Windows Jump Host to access the Nginx Plus Dashboard.
+
+.. image:: /_static/plusdashboard.png
+
+Explore each pane of the dashboard. Review the statistics available for:
+
+- Server Zones
+- Upstreams
+- Caches
+
+.. note:: The cache may be in a warning state due to a low percentage of cache hits. Hit the ``F5 App`` several times with ``cache disabled`` in Chrome bring the percentage up.

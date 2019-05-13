@@ -2,6 +2,12 @@ Lab – Service Discovery Setup
 -----------------------------------------
 
 NGINX Plus can perform service discovery in several different ways. 
+
+Service Discovery for NGINX Plus Using Consul APIs
+Service Discovery for NGINX Plus with etcd
+Service Discovery for NGINX Plus with ZooKeeper
+
+
 .. TODO:: provide link/more info
 In the this demo we're using Hashicorp's Consul to capture service state (with the help of Registrator).
 NGINX Plus will then query Consule for a DNS SRV record to determine appropiate upstream servers.

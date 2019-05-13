@@ -1,18 +1,18 @@
 Base Configuration
 -----------------------------------------
 
-The UDF lab blueprint provides several containers running web applications running on ``Docker Host``.
+The UDF lab blueprint provides several containers running web applications on the ``Docker Host`` instance.
 These containers will be used as ``upstreams`` (or ``pool members`` in F5 terminology) throughout the lab.
-All necessary containers should be running when you UDF blueprint completes booting.
+All necessary containers should be running when the UDF blueprint completes booting.
 
-Throughout the lab NGINX Plus configuration will be deployed directly from bash.
+Throughout the lab Nginx Plus configuration will be deployed directly from bash.
 In order to prevent tedious work in a text editor, the lab provides bash commands using concatenation and redirection. 
-When directed, simply copy and paste the commands from the appropiate host.
+When directed, simply copy and paste the commands on the specified host.
 
-Reloading the NGINX Configuration
+Reloading the Nginx Configuration
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Frequently throughout this lab you will be asked to "reload the NGINX configuration". Use the following pattern:
+Frequently throughout this lab you will be asked to "reload the Nginx configuration". Use the following pattern:
 
 .. code:: shell
 
@@ -22,25 +22,28 @@ The first command, ``nginx -t``, checks the configuration syntax. The second com
 
 .. image:: /_static/reload.png
 
-During the reload procedure, a ``SIGHUP`` is sent the kernel. The master NGINX process evaluates the new config and checks for ``emerg`` level errors.
+During the reload procedure, a ``SIGHUP`` is sent the kernel. The master Nginx process evaluates the new config and checks for ``emerg`` level errors.
 Lastly, new workers are forked while old workers gracefully shut down. This worker model is important to understand as some features require state sharing across the workers.
 
 
 Blocks and Directives
 ~~~~~~~~~~~~~~~~~~~~~
 
-.. image:: /_static/confcontext.png
+.. image:: /_static/confcontexts.png
 
 Nginx configurations are made up nested contexts. All contexts are a child of ``Main``. The top-level contexts are:
 
 Events
-  The "events" is used to set global options that affect how Nginx handles connections at a general level.
+  This context is used to set global options that affect how Nginx handles connections at a general level.
+
 
 HTTP
-  In this lab we'll be using NGINX as a reverse proxy. Consequently, the ``http`` context will hold the majority of the configuration.
+  This lab focusses on using Nginx as a reverse proxy. Consequently, the ``http`` context will hold the majority of the configuration.
+
 
 Stream
-  The ``stream`` context provides options for TCP/UDP load balancing. We will use this context later in the lab to configure clustering between NGINX plus instances.
+  The ``stream`` context provides options for TCP/UDP load balancing. This context will be used later to configure clustering between Nginx plus instances.
+
 
 This lab will focus mainly configuration blocks under the ``http`` context.
 
@@ -49,31 +52,31 @@ Create the Base Configuration
 
 Start by creating a basic load balancing configuration.
 
-.. note:: Execute these steps on the NGINX Plus Master Instance.
+.. note:: Execute this command on the Nginx Plus Master Instance.
 
 .. code:: 
   
-    sudo mv /etc/nginx/conf.d/default.conf /etc/nginx/conf.d/default.conf.old && \
-    sudo bash -c 'cat > /etc/nginx/conf.d/labApp.conf' <<EOF
-    upstream f5App { 
-        server docker.nginx-udf.internal:8080;  
-        server docker.nginx-udf.internal:8081;  
-        server docker.nginx-udf.internal:8082;
-    }
+  sudo mv /etc/nginx/conf.d/default.conf /etc/nginx/conf.d/default.conf.old && \
+  sudo bash -c 'cat > /etc/nginx/conf.d/labApp.conf' <<EOF
+  upstream f5App { 
+      server docker.nginx-udf.internal:8080;  
+      server docker.nginx-udf.internal:8081;  
+      server docker.nginx-udf.internal:8082;
+  }
 
-    server {
-        listen 80;
-        error_log /var/log/nginx/f5App.error.log info;  
-        access_log /var/log/nginx/f5App.access.log combined;
+  server {
+      listen 80;
+      error_log /var/log/nginx/f5App.error.log info;  
+      access_log /var/log/nginx/f5App.access.log combined;
 
-        location / {
-            proxy_pass http://f5App;
+      location / {
+          proxy_pass http://f5App;
 
-        }
-    }
+      }
+  }
   EOF
 
-.. note:: Reload the Nginx Configuration (```sudo nginx -t && sudo nginx -s reload```)
+.. note:: Reload the Nginx Configuration (``sudo nginx -t && sudo nginx -s reload``)
 
 The command first renames ``default.conf`` to prevent serving the default page. Next, a configuration is written to ``/etc/nginx/conf.d/labApp.conf``.
 This configuration contained in this is part of the ``http`` context due to the include statement in ``/etc/nginx/nginx.conf``.

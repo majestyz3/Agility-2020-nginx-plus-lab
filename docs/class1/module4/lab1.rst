@@ -1,11 +1,43 @@
-Lab – Dashboard and API Configuration
+Dashboard and API Configuration
 -----------------------------------------
 
-This lab walks through configuring the NGINX Plus Dashboard and API.
+This lab walks through configuring the Nginx Plus Dashboard and API.
+
+Deploy the API and dashboard configuration.
+
+.. note:: Execute these steps on the NGINX Plus Master Instance.
 
 .. code:: shell
 
-    sudo wget -O /etc/nginx/conf.d/nginx-plus-api.conf https://gist.githubusercontent.com/nginx-gists/a51341a11ff1cf4e94ac359b67f1c4ae/raw/bf9b68cca20c87f303004913a6a9e9032f24d143/nginx-plus-api.conf
+    sudo bash -c 'cat > /etc/nginx/conf.d/labApi.conf' <<EOF
+    server {
+        listen 80;
+        server_name master.nginx-udf.internal;
 
-REWORK WITH THE MODEL_API CONFIG
+        location /api/ {
+            api write=on;
+        }
+
+        location = /dashboard.html {
+            root /usr/share/nginx/html;
+        }
+
+        # Redirect requests for pre-R14 dashboard
+        location /status.html {
+            return 301 /dashboard.html;
+        }
+
+        location /swagger-ui/ {
+            root /usr/share/nginx/html/swagger-ui;
+            index index.html;
+        }
+    }
+    EOF
+
+.. note:: Reload the Nginx Configuration (```sudo nginx -t && sudo nginx -s reload```)
+
+Typically, the Nginx API is exposed on port 8080 and some form of authentication is configured.
+This lab uses a ``server_name`` directive and does not implement security.
+
+
   

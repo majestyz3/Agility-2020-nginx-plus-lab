@@ -2,7 +2,7 @@ Shared Memory Zone Synchronization
 ===========================================
 
 In this module you will learn about synchronization of shared memory zones across clusters of NGINX Plus instances.
-If several NGINX Plus instances are organized in a cluster, they can share some state data between them, including:
+If several NGINX Plus instances are organized in a cluster, they can share some runtime state data between them, including:
 
 - [sticky learn session persistence](https://docs.nginx.com/nginx/admin-guide/load-balancer/http-load-balancer/#sticky)
 - [requests limiting](https://docs.nginx.com/nginx/admin-guide/security-controls/controlling-access-proxied-http/#limit_req)

@@ -1,4 +1,4 @@
-Lab – Configure Zone Synchronization
+Configure Zone Synchronization
 -----------------------------------------
 
 Each NGINX instance in a cluster needs to be configured to listen and exchange data with other cluster members.
@@ -23,8 +23,8 @@ Cluster configuration is performed in the ``stream`` context (note this command 
     EOF
 
 This configuration defines a TCP listener to be used for ``zone_sync``.
-Nginx Plus instances included in the cluster are defined with ``zone_sync_server`` (this can also be dynamically defined via dns with the ``resolve``) directive.
+Nginx Plus instances included in the cluster are defined with ``zone_sync_server`` directives (or with dns with ``resolve``).
 
-.. note:: Restart the Nginx daemon for these changes (``sudo systemctl restart nginx``)
+.. note:: Restart the Nginx daemon for these changes to take effect (``sudo systemctl restart nginx``).
 
 

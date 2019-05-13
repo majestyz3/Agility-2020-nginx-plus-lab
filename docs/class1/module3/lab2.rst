@@ -1,14 +1,15 @@
-Lab – Configuration Synchronization
+Configuration Synchronization
 -----------------------------------------
 
-The ``listen`` directives in the example server blocks do not specify IP addresses -- only ports. One way to ensure we have common shared memory zones across
-Nginx Plus instances n=in our cluster is to synchronize the configuration. Nginx provides a package/script for this.
+To be synchronized, shared memory zones must be identically named across Nginx Plus cluster members.
+One way to ensure we have common shared memory zones across the cluster is to synchronize the configuration.
+Nginx provides a package/script for this task.
 
 .. image:: /_static/nginx-sync-sh.png
 
-.. NOTE:: Prior to lab ssh access (via keys) to all cluster mamebers was configured for the NGINX Plus Master.
+.. NOTE:: The lab UDF image was already configured for ssh access (via keys) to all cluster members from the NGINX Plus Master.
 
-Create the configuration file ``/etc/nginx-sync.conf`` on the master machine.
+Create the configuration file ``/etc/nginx-sync.conf``.
 
 .. note:: Execute these steps on the NGINX Plus Master Instance.
 

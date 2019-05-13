@@ -11,9 +11,11 @@ Configure Sticky Learn
 ~~~~~~~~~~~~~~~~~~~~~~
 
 Nginx Plus offers a persistence method where cookies are learned from Set-Cookie headers in HTTP responses. 
-The F5 demo app sets a session cookie called ``_nginxPlusLab`` with a 30 second expiry. Using ``sticky learn`` Nginx will persist this client to the container where the original request (with no cookie) was load balanced.
+The F5 demo app sets a session cookie called ``_nginxPlusLab`` with a 30 second expiry.
+Using ``sticky learn`` Nginx will persist this client to the container where the original request (with no cookie) was load balanced.
 Using runtime state sharing, this persistence information can be shared across the cluster.
 
+Update the upstream configuration to use ``sticky learn``.
 
 .. note:: Execute these steps on the NGINX Plus Master Instance.
 
@@ -58,20 +60,21 @@ From the Windows Jump Host, open a new browser tab then open Chrome Developer to
 
 .. image:: /_static/developer.png
 
-Click on the ``BIG-IP App`` bookmark. This requests hits a BIG-IP virtual server. A round robin pool configured with the 3 Nginx Plus instances is attached.
+Click on the ``BIG-IP App`` bookmark. This requests hits a BIG-IP virtual server. A pool configured for round robin load balancing containing the 3 Nginx Plus instances is attached.
 This response should have the Set-Cookie header for the ``_nginxPlusLab`` cookie. Take note of the ``X-Lab-NGINX`` and ``X-Lab-Origin`` headers.
-These headers show which Nginx instance the BIG-IP load balanced the request to and which docker container Nginx Plus selected from the upstream.
+The ``X-Lab-NGINX`` header shows which Nginx instance was the result of the BIG-IP's load balancing decision.
+The ``X-Lab-Origin`` header shows the docker container chosen by Nginx Plus's load balancing.
 
 .. image:: /_static/request1.png
 
 Refresh the page.
 
-You should notice the Nginx Plus instance (``X-Lab-NGINX``) changing while the Origin container stays the same.
-This is because each Nginx Plus instance in the cluster has the necessary persistence information from ``sticky learn`` to make the correct load balancing decision.
+You should notice the Nginx Plus instance (``X-Lab-NGINX``) changing while the Origin container (``X-Lab-Origin``) stays the same.
+This is because each Nginx Plus instance in the cluster has the necessary persistence information from runtime sharing ``sticky learn`` data to make the correct load balancing decision.
 
-.. image:: /_static/request1.png
+.. image:: /_static/request2.png
 
-.. image:: /_static/request1.png
+.. image:: /_static/request3.png
 
 
 

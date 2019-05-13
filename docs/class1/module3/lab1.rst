@@ -1,8 +1,10 @@
 Lab – Configure Zone Synchronization
 -----------------------------------------
 
-Each NGINX instance in a cluster needs to be configured to listen and exchange data with other cluster members. We need to add the cluster configuration to the to level ``stream`` block 
-(notice this is being cacatencated to the end of /etc/nginx/nginx.conf). NGINX Plus instances can exchange state data with all other members in a cluster, provided that the shared memory zone has the same name on all cluster members.
+Each NGINX instance in a cluster needs to be configured to listen and exchange data with other cluster members.
+Cluster configuration is performed in the ``stream`` context (note this command appends to ``/etc/nginx/nginx.conf``).
+
+.. note:: Execute these steps on the NGINX Plus Master Instance.
 
 .. code:: shell
     
@@ -20,9 +22,9 @@ Each NGINX instance in a cluster needs to be configured to listen and exchange d
     }
     EOF
 
-The nginx proc must be restarted for the zone sync to initiate.
+This configuration defines a TCP listener to be used for ``zone_sync``.
+Nginx Plus instances included in the cluster are defined with ``zone_sync_server`` (this can also be dynamically defined via dns with the ``resolve``) directive.
 
-.. code:: shell 
+.. note:: Restart the Nginx daemon for these changes (``sudo systemctl restart nginx``)
 
-    sudo systemctl restart nginx
 

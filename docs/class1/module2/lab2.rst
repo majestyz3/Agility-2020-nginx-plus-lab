@@ -1,109 +1,132 @@
-Lab - Health Checks
+Incrementally More Useful Configurations
 --------------------------
 
-For passive health checks, NGINX and NGINX Plus monitor transactions as they happen, and try to resume failed connections. If the transaction still cannot be resumed, NGINX open source and NGINX Plus mark the server as unavailable and temporarily stop sending requests to it until it is marked active again.
+The basic configuration was missing several crucial declarations needed for a useful reverse proxy.
+This lab will incrementally build a more advanced and useful configuration which takes advantage of Nginx Plus features.
 
-The conditions under which an upstream server is marked unavailable are defined for each upstream server with parameters to the server directive in the upstream block:
 
-.. code:: shell
+Upstream Features: Selection Algorithm, Weight
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  upstream backend {
-      server backend1.example.com;
-      server backend2.example.com max_fails=3 fail_timeout=30s;
-  }
-
-Active Health Checks
-~~~~~~~~~~~~~~~~~~~~
-NGINX Plus can periodically check the health of upstream servers by sending special health‑check requests to each server and verifying 
-the correct response.
-
-To enable active health checks:
-
-In the location that passes requests (proxy_pass) to an upstream group, include the *health_check* directive. 
+.. note:: Execute these steps on the NGINX Plus Master Instance.
 
 .. code:: shell
 
-  server {
-      location / {
-          proxy_pass http://backend;
-          health_check;
-      }
-  }
-
-By default, every five seconds NGINX Plus sends a request for “/” to each server in the backend group. 
-If any communication error or timeout occurs (the server responds with a status code outside the range from 200 through 399) the health check fails. The server is marked as unhealthy, and NGINX Plus does not send client requests to it until it once again passes a health check. To allow the worker processes to use the same set of counters to keep track of responses from the servers in an upstream group use a shared memory zone (``zone``).
-
-*health_check* supports the following parameters:
-- port
-- interval
-- fails
-- passes
-- uri
-- match
-
-  
-Defining Custom Conditions
-~~~~~~~~~~~~~~~~~~~~~~~~~~
-You can set custom conditions that the response must satisfy for the server to pass the health check. 
-The conditions are defined in a ``match`` block, which is referenced in the match parameter of the health_check directive.
-
-.. code:: shell
-
-  http {
-      #...
-      match server_ok {
-          # tests are here
-      }
-  }
-
-Refer to the block from the health_check directive by specifying the *match* parameter and the name of the match block.
-
-.. code:: shell
-
-  sudo bash -c 'cat > /etc/nginx/conf.d/labExample.conf' <<EOF
+  sudo bash -c 'cat > /etc/nginx/conf.d/labApp.conf' <<EOF
   upstream f5App { 
       least_conn;
-      zone f5App 64k;
-      server docker.nginx-udf.internal:8080;  
-      server docker.nginx-udf.internal:8081;  
-      server docker.nginx-udf.internal:8082;
-  }
-
-  upstream nginxApp { 
-      least_conn;
-      zone nginxApp 64k;
-      server docker.nginx-udf.internal:8083;  
-      server docker.nginx-udf.internal:8084;  
-      server docker.nginx-udf.internal:8085;
-  }
-
-  match f5_ok {
-      status 200;
-  }
-
-  match nginx_ok {
-      status 200-399;
-      body !~ "maintenance mode";
+      server docker.nginx-udf.internal:8080 weight=25;  
+      server docker.nginx-udf.internal:8081 weight=5;  
+      server docker.nginx-udf.internal:8082 weight=5;
   }
 
   server {
-      listen 80;
-      root /usr/share/nginx/html;
-      error_log /var/log/nginx/LabApp.error.log info;  
-      access_log /var/log/nginx/LabApp.access.log combined;
-      status_zone default;
+    listen 80;
+    error_log /var/log/nginx/f5App.error.log info;  
+    access_log /var/log/nginx/f5App.access.log combined;
 
-      location /f5/ {
-          proxy_pass http://f5App/;
-          health_check match=f5_ok;
-      }
-      location /nginx/ {
-          proxy_pass http://nginxApp/;
-          health_check match=nginx_ok;
-      }
-  }
+    location / {
+        proxy_pass http://f5App;
+    }
+}
   EOF
 
-.. image:: /_static/class1-module2-lab2-nginx-plus-nodeport.png
+.. note:: Reload the Nginx Configuration (```sudo nginx -t && sudo nginx -s reload```)
 
-.. NOTE:: You will have a different port value!
+The basic declaration didn't specify a selection algorithm (ie. load balacing method) so Round Robin was used. 
+Nginx support `Round Robin`_, `Hash`_, `IP Hash`_, and `Least Connections`_ selection algorithms. Nginx Plus adds the `Least Time`_ algorithm.
+
+``Weight`` is a similiar concept as ratio load balancing with F5 products.
+In this example, the container listening on port 8080 is weighted 5 times heavier than the other upstream servers. 
+
+Verify the configuration. On the ``Windows Jump Host`` reload the ``F5 App`` several times paying attention to the ``Server IP`` field on the page. 
+
+Multiple Upstreams, Server Blocks, and a Shared Memory Zone
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+This lab will end up using several upstreams. In order to keep the configuration size managable, these will be stored in a seperate file. 
+
+.. note:: Execute these steps on the NGINX Plus Master Instance.
+
+.. code:: shell
+
+    sudo bash -c 'cat > /etc/nginx/conf.d/labUpstream.conf' <<EOF
+    upstream f5App { 
+        least_conn;
+        zone f5App 64k;
+        server docker.nginx-udf.internal:8080;  
+        server docker.nginx-udf.internal:8081;  
+        server docker.nginx-udf.internal:8082;
+
+    }
+
+    upstream nginxApp { 
+        least_conn;
+        zone nginxApp 64k;
+        server docker.nginx-udf.internal:8083;  
+        server docker.nginx-udf.internal:8084;  
+        server docker.nginx-udf.internal:8085;
+    }
+
+    upstream nginxApp-text {
+        least_conn;
+        zone nginxApp 64k;
+        server docker.nginx-udf.internal:8086;  
+        server docker.nginx-udf.internal:8087;  
+        server docker.nginx-udf.internal:8088;
+    }
+    EOF
+
+This example defines the ``zone`` directive. With Nginx weights are managed independently by each worker process. Nginx Plus uses a shared memory segment for upstream data 
+(configured with the zone directive), so weights are shared between workers and traffic is distributed more accurately across the instance.
+
+Next, the advanced configuration will define multiple server blocks (and some will have multiple locations).
+
+.. note:: Execute these steps on the NGINX Plus Master Instance.
+
+.. code:: shell
+
+    sudo bash -c 'cat > /etc/nginx/conf.d/labApp.conf' <<EOF
+    server {
+        listen 80 default_server;
+        server_name f5-app.nginx-udf.internal bigip-app.nginx-udf.internal;
+        error_log /var/log/nginx/f5App.error.log info;  
+        access_log /var/log/nginx/f5App.access.log combined;
+ 
+        location / {
+            proxy_pass http://f5App;
+
+        }
+    }
+
+    server {
+        listen 80;
+        server_name nginx-app.nginx-udf.internal;
+        error_log /var/log/nginx/nginxApp.error.log info;  
+        access_log /var/log/nginx/nginxApp.access.log combined;
+        status_zone nginxApp;
+
+        location /text {
+            proxy_pass http://nginxApp-text;
+        }
+        location / {
+            proxy_pass http://nginxApp;
+        }
+    }
+
+.. note:: Reload the Nginx Configuration (```sudo nginx -t && sudo nginx -s reload```)
+
+In this example, multiple server blocks are defined listening on the same port. 
+When multiple server blocks match a request, Nginx compares the request ``Host`` header to the ``server_name`` directive.
+If no ``server_name`` match is found the server block marked ``default_server`` will be used.
+In the last server block, there are multiple locations defined. Nginx matches the URI against the most specific ``location`` and then proxies the request to the defined upstream.
+
+The ``status_zone`` directive allow workers to collect and aggregate server block statistics. Multiple ``server`` blocks could be part of the same ``status_zone``.
+
+
+
+.. _`Round Robin`: https://www.nginx.com/blog/choosing-nginx-plus-load-balancing-techniques/#round-robin
+.. _`Hash`: https://www.nginx.com/blog/choosing-nginx-plus-load-balancing-techniques/#hash
+.. _`IP Hash`: https://www.nginx.com/blog/choosing-nginx-plus-load-balancing-techniques/#ip-hash
+.. _`Least Connections`: https://www.nginx.com/blog/choosing-nginx-plus-load-balancing-techniques/#least-connections
+.. _`Least Time`: https://www.nginx.com/blog/choosing-nginx-plus-load-balancing-techniques/#least-time

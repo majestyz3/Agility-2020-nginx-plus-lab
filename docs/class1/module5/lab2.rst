@@ -1,27 +1,24 @@
-Lab – Scaling the Example Service
+Scaling the Example Service
 -----------------------------------------
 
-Now that service discovery is configured for our example service, let's scale the service and monitor the changes to the upstream.
+Service discovery is configured for the ``SD-demo`` App. This lab tests service discovery by scaling the demo service.
 
 Service Scaling
 ~~~~~~~~~~~~~~~~~~~~
 
-SSH to **Docker host** to perform this step.
+.. note:: Execute these steps on the Docker Host Instance.
 
 .. code:: shell
 
     $ cd ~/udf-nginx-plus-service-discovery
-    $ docker-compose up --scale http=5
+    $ docker-compose up --scale http=5 -d
 
-Monitor Service Scaling
-~~~~~~~~~~~~~~~~~~~~~~~~
-
-Watch the ``sd_demo`` upstream in the dashboard.
+Watch the ``sd-demo`` upstream in the dashboard. Scale the ``http`` service up or down as desired.
 
 Query the SRV Record
 ~~~~~~~~~~~~~~~~~~~~
 
-Here are the DNS recrods being returned which NGINX Plus parsed into upstream configuration.
+In this example, Nginx Plus performs service discovery by querying the following records.
 
 .. code:: shell
 

@@ -1,67 +1,108 @@
-NGINX Plus Caching
------------------------------
+Health Checks
+--------------------------
 
-Blurb about NGINX OSS caching. Possibly a diagram with LB tier and cache tier.
+For passive health checks, Nginx and Nginx Plus monitor transactions as they happen, and try to resume failed connections.
+If the transaction still cannot be resumed, Nginx open source and Nginx Plus mark the server as unavailable and temporarily stop sending requests to it until it is marked active again.
 
-
-Add a cache
-~~~~~~~~~~~
+The conditions under which an upstream server is marked unavailable are defined for each upstream server with parameters to the server directive in the upstream block.
+For example:
 
 .. code:: shell
 
-  sudo bash -c 'cat > /etc/nginx/conf.d/labExample.conf' <<EOF
-  proxy_cache_path /tmp/cache keys_zone=labCache:10m inactive=60m;
-
-  upstream f5App { 
-      least_conn;
-      zone f5App 64k;
-      server docker.nginx-udf.internal:8080;  
-      server docker.nginx-udf.internal:8081;  
-      server docker.nginx-udf.internal:8082;
+  upstream backend {
+      server backend1.example.com;
+      server backend2.example.com max_fails=3 fail_timeout=30s;
   }
 
-  upstream nginxApp { 
-      least_conn;
-      zone nginxApp 64k;
-      server docker.nginx-udf.internal:8083;  
-      server docker.nginx-udf.internal:8084;  
-      server docker.nginx-udf.internal:8085;
-  }
+Active Health Checks
+~~~~~~~~~~~~~~~~~~~~
+Nginx Plus can periodically check the health of upstream servers by sending special health‑check requests to each server and verifying 
+the correct response.
+For example:
 
-  match f5_ok {
-      status 200;
-  }
-
-  match nginx_ok {
-      status 200-399;
-      body !~ "maintenance mode";
-  }
+.. code:: shell
 
   server {
-      listen 80;
-      root /usr/share/nginx/html;
-      error_log /var/log/nginx/LabApp.error.log info;  
-      access_log /var/log/nginx/LabApp.access.log combined;
-      status_zone default;
-
-      location /f5/ {
-          proxy_pass http://f5App/;
-          health_check match=f5_ok;
-          proxy_cache labCache;
-      }
-      location /nginx/ {
-          proxy_pass http://nginxApp/;
-          health_check match=nginx_ok;
-          proxy_cache labCache;
+      location / {
+          proxy_pass http://backend;
+          health_check;
       }
   }
-  EOF
 
+By default, every five seconds Nginx Plus sends a request for “/” to each server in the backend group. 
+If any communication error or timeout occurs (the server responds with a status code outside the range from 200 through 399) the health check fails. The server is marked as unhealthy, and Nginx Plus does not send client requests to it until it once again passes a health check. To allow the worker processes to use the same set of counters to keep track of responses from the servers in an upstream group use a shared memory zone (``zone``).
 
-CACHE INVALIDATION REQUEST
-curl -X PURGE http://f5-app.nginx-udf.internal/{{some_content}}
-curl -X PURGE http://f5-app.nginx-udf.internal/*
+``health_check`` supports the following parameters:
+- port
+- interval
+- fails
+- passes
+- uri
+- match
 
+  
+Defining Custom Conditions
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+Nginx Plus can use custom conditions that the response must satisfy for the server to pass the health check. 
+The conditions are defined in a ``match`` block, which is referenced in the match parameter of the health_check directive.
+For example:
 
+.. code:: shell
 
+  http {
+      #...
+      match server_ok {
+          # tests are here
+      }
+  }
 
+Refer to the block from the health_check directive by specifying the ``match`` parameter and the name of the match block.
+
+.. note:: Execute these steps on the NGINX Plus Master Instance.
+
+.. code:: shell
+
+    sudo bash -c 'cat > /etc/nginx/conf.d/labApp.conf' <<EOF
+    match f5_ok {
+        status 200;
+    }
+
+    match nginx_ok {
+        status 200-399;
+        body !~ "maintenance mode";
+    }
+
+    server {
+        listen 80 default_server;
+        server_name f5-app.nginx-udf.internal bigip-app.nginx-udf.internal;
+        error_log /var/log/nginx/f5App.error.log info;  
+        access_log /var/log/nginx/f5App.access.log combined;
+        status_zone f5App;
+
+        location / {
+            proxy_pass http://f5App;
+            health_check match=f5_ok;
+
+            proxy_cache f5AppCache;
+            proxy_cache_purge $purge_method;
+        }
+    }
+
+    server {
+        listen 80;
+        server_name nginx-app.nginx-udf.internal;
+        error_log /var/log/nginx/nginxApp.error.log info;  
+        access_log /var/log/nginx/nginxApp.access.log combined;
+        status_zone nginxApp;
+
+        location /text {
+            proxy_pass http://nginxApp-text;
+            health_check match=nginx_ok;
+        }
+        location / {
+            proxy_pass http://nginxApp;
+            health_check match=nginx_ok;
+        }
+    }
+
+.. note:: Reload the Nginx Configuration (```sudo nginx -t && sudo nginx -s reload```)

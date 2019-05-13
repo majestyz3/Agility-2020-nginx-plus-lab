@@ -1,125 +1,119 @@
-Lab – Base Configuration
+Base Configuration
 -----------------------------------------
 
-This lab provides multiple containers of two example web applications running on **Docker Host**. These containers will be used as *upstreams* or *pool members* throughout the lab.
+The UDF lab blueprint provides several containers running web applications running on ``Docker Host``.
+These containers will be used as ``upstreams`` (or ``pool members`` in F5 terminology) throughout the lab.
+All necessary containers should be running when you UDF blueprint completes booting.
+
+Throughout the lab NGINX Plus configuration will be deployed directly from bash.
+In order to prevent tedious work in a text editor, the lab provides bash commands using concatenation and redirection. 
+When directed, simply copy and paste the commands from the appropiate host.
+
+Reloading the NGINX Configuration
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Frequently throughout this lab you will be asked to "reload the NGINX configuration". Use the following pattern:
 
 .. code:: shell
 
-  [centos@ip-10-1-1-5 ~]$ docker ps --format "{{.Image}}\t{{.Names}}\t\t{{.Ports}}"
-  f5-demo-app-lab:latest	f5App3		443/tcp, 0.0.0.0:8082->80/tcp
-  f5-demo-app-lab:latest	f5App2		443/tcp, 0.0.0.0:8081->80/tcp
-  f5-demo-app-lab:latest	f5App1		443/tcp, 0.0.0.0:8080->80/tcp
-  nginxdemos/hello	nginxApp1		0.0.0.0:8083->80/tcp
-  nginxdemos/hello	nginxApp3		0.0.0.0:8085->80/tcp
-  nginxdemos/hello	nginxApp2		0.0.0.0:8084->80/tcp
+  sudo nginx -t && sudo nginx -s reload
 
-Throughout the lab NGINX Plus configuration will be deployed directly from bash. In order to prevent tedious work in a text editor, the lab provides bash
-commands using concatenation and redirection. These can simply be copy and pasted.
+The first command, ``nginx -t``, checks the configuration syntax. The second command, ``nginx -s reload``, reloads the configuration.
 
-.. NOTE:: Frequently in the lab you will be asked to "reload the NGINX configuration". Use the following pattern:
-.. code:: shell
+.. image:: /_static/reload.png
 
-  sudo nginx -t
-  sudo nginx -s reload
+During the reload procedure, a ``SIGHUP`` is sent the kernel. The master NGINX process evaluates the new config and checks for ``emerg`` level errors.
+Lastly, new workers are forked while old workers gracefully shut down. This worker model is important to understand as some features require state sharing across the workers.
 
-The first command checks the configuration syntax. The second command reloads the configuration. 
 
+Blocks and Directives
+~~~~~~~~~~~~~~~~~~~~~
+
+.. image:: /_static/confcontext.png
+
+Nginx configurations are made up nested contexts. All contexts are a child of ``Main``. The top-level contexts are:
+
+Events
+  The "events" is used to set global options that affect how Nginx handles connections at a general level.
+
+HTTP
+  In this lab we'll be using NGINX as a reverse proxy. Consequently, the ``http`` context will hold the majority of the configuration.
+
+Stream
+  The ``stream`` context provides options for TCP/UDP load balancing. We will use this context later in the lab to configure clustering between NGINX plus instances.
+
+This lab will focus mainly configuration blocks under the ``http`` context.
 
 Create the Base Configuration
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+Start by creating a basic load balancing configuration.
+
+.. note:: Execute these steps on the NGINX Plus Master Instance.
+
 .. code:: 
   
-  sudo mv /etc/nginx/conf.d/default.conf /etc/nginx/conf.d/default.conf.old && \
-  sudo bash -c 'cat > /etc/nginx/conf.d/labExample.conf' <<EOF
-  upstream f5App { 
-      server docker.nginx-udf.internal:8080;  
-      server docker.nginx-udf.internal:8081;  
-      server docker.nginx-udf.internal:8082;
-  }
+    sudo mv /etc/nginx/conf.d/default.conf /etc/nginx/conf.d/default.conf.old && \
+    sudo bash -c 'cat > /etc/nginx/conf.d/labApp.conf' <<EOF
+    upstream f5App { 
+        server docker.nginx-udf.internal:8080;  
+        server docker.nginx-udf.internal:8081;  
+        server docker.nginx-udf.internal:8082;
+    }
 
-  server {
-      listen 80;
-      root /usr/share/nginx/html;
-      error_log /var/log/nginx/LabApp.error.log info;  
-      access_log /var/log/nginx/LabApp.access.log combined;
+    server {
+        listen 80;
+        error_log /var/log/nginx/f5App.error.log info;  
+        access_log /var/log/nginx/f5App.access.log combined;
 
-      location / {
-          proxy_pass http://f5App;
-      }
-  }
+        location / {
+            proxy_pass http://f5App;
+
+        }
+    }
   EOF
 
-.. TODO:: Upstreams, Server block, location, proxy_pass discussion, lack of selection access_log
+.. note:: Reload the Nginx Configuration (```sudo nginx -t && sudo nginx -s reload```)
 
-Test the site in the browser on your Jump host. The default selection algorithm is round-robin. Notice the upstream member address changing which subsequent requests.
+The command first renames ``default.conf`` to prevent serving the default page. Next, a configuration is written to ``/etc/nginx/conf.d/labApp.conf``.
+This configuration contained in this is part of the ``http`` context due to the include statement in ``/etc/nginx/nginx.conf``.
 
-Add Selection Algorithm, Weight
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.. code::
 
-.. code:: shell
+    http {
+    ##Content Removed##
 
-  sudo bash -c 'cat > /etc/nginx/conf.d/labExample.conf' <<EOF
-  upstream f5App { 
-      least_conn;
-      server docker.nginx-udf.internal:8080 weight=10;  
-      server docker.nginx-udf.internal:8081 weight=5;  
-      server docker.nginx-udf.internal:8082 weight=5;
-  }
+    include /etc/nginx/conf.d/*.conf;
+}
 
-  server {
-      listen 80;
-      root /usr/share/nginx/html;
-      error_log /var/log/nginx/LabApp.error.log info;  
-      access_log /var/log/nginx/LabApp.access.log combined;
+The following types of blocks are used in the basic configuration:
 
-      location / {
-          proxy_pass http://f5App;
-      }
-  }
-  EOF
+Upstream
+  This block is used to define and configure ``upstream`` servers -- a named pool of servers that Nginx will proxy requests to. 
 
-Add Second Upstream, a Second Location, Shared Memory Zone
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-.. code:: shell
+Server
+  Nginx will evaluate each request to determine which ``server`` block should be used. The decision is based on the following directives:
 
-  sudo bash -c 'cat > /etc/nginx/conf.d/labExample.conf' <<EOF
-  upstream f5App { 
-      least_conn;
-      zone f5App 64k;
-      server docker.nginx-udf.internal:8080;  
-      server docker.nginx-udf.internal:8081;  
-      server docker.nginx-udf.internal:8082;
-  }
+  - listen: The ip address / port combination that this server block should respond to. 
 
-  upstream nginxApp { 
-      least_conn;
-      zone nginxApp 64k;
-      server docker.nginx-udf.internal:8083;  
-      server docker.nginx-udf.internal:8084;  
-      server docker.nginx-udf.internal:8085;
-  }
+  - server_name: When multiple listen directives of the same specificity that can handle the request, Nginx will parse the ``Host`` header of the request and match it against this directive.
 
-  server {
-      listen 80;
-      root /usr/share/nginx/html;
-      error_log /var/log/nginx/LabApp.error.log info;  
-      access_log /var/log/nginx/LabApp.access.log combined;
-      status_zone default;
+  The log declarations allow access and error logs for this server declaration to be seperated from the general Nginx logs.
+  
+Location
+  Notice the ``location`` block is nested under the ``server`` block.
+  Once a server context has been selected for a request, the request is evaluated against one or more location blocks to determine what actions need to be taken.
 
-      location /f5/ {
-          proxy_pass http://f5App/;
-      }
-      location /nginx/ {
-          proxy_pass http://nginxApp/;
-      }
-  }
-  EOF
+The ``proxy_pass`` directive tells Nginx to proxy all requests to the defined ``upstream``.
 
-In NGINX, weights are managed independently by each worker process. NGINX Plus uses a shared memory segment for upstream data 
-(configured with the zone directive), so weights are shared between workers and traffic is distributed more accurately.
+Test the Site
+~~~~~~~~~~~~~
 
-Location discussion -- trailing slash
+Log in to the ``Windows Jump Host``. Open ``Chrome``. Click the bookmark titled ``F5 App`` from the bookmarks bar.
+
+.. image:: /_static/bookmarks.png
+
+An F5 example application should load.
 
 
 

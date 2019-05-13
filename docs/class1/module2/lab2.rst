@@ -1,5 +1,5 @@
 Incrementally More Useful Configurations
---------------------------
+----------------------------------------
 
 The basic configuration was missing several crucial directives needed for a useful reverse proxy.
 This lab will incrementally build a more advanced and useful configuration which takes advantage of Nginx Plus features.
@@ -28,7 +28,7 @@ Upstream Features: Selection Algorithm, Weight
     location / {
         proxy_pass http://f5App;
     }
-}
+  }
   EOF
 
 .. note:: Reload the Nginx Configuration (``sudo nginx -t && sudo nginx -s reload``)
@@ -46,7 +46,7 @@ One container should be weighted heavier than the others -- this weighting will 
 In this configuration, ``weight`` is enforced on a per-worker basis.
 
 Multiple Upstreams, Server Blocks, and a Shared Memory Zone
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 This lab will end up using several upstreams. In order to keep the configuration size managable, these will be stored in a seperate file. 
 

@@ -10,7 +10,7 @@ In order to prevent tedious work in a text editor, the lab provides bash command
 When directed, simply copy and paste the commands on the specified host.
 
 Reloading the Nginx Configuration
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Frequently throughout this lab you will be asked to "reload the Nginx configuration". Use the following pattern:
 
@@ -92,7 +92,7 @@ This configuration contained in this is part of the ``http`` context due to the 
     http {
     ##Content Removed##
     include /etc/nginx/conf.d/*.conf;
-}
+    }
 
 The following types of blocks are used in the basic configuration:
 

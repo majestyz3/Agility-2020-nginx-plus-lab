@@ -19,7 +19,7 @@ The ``docker-compose`` command instructs docker to scale the ``http`` service to
 .. image:: /_static/sd-upstream-full.png
    :width: 400pt
 
- Scale the ``http`` service up or down as desired.
+Scale the ``http`` service up or down as desired.
 
 Query the SRV Record
 ~~~~~~~~~~~~~~~~~~~~

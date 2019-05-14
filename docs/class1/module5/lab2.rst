@@ -14,7 +14,7 @@ Service Scaling
 
 The ``docker-compose`` command instructs docker to scale the ``http`` service to 5 instances.
 
-**Watch the ``sd-demo`` upstream in the dashboard.**
+**Watch the "sd-demo" upstream in the dashboard.**
 
 .. image:: /_static/sd-upstream-full.png
    :width: 500pt

@@ -81,7 +81,7 @@ Invalidating Cached items
 **Populate the cache.**
 
 The ``F5 App`` application is configured for a short 120 second ``Max-Age`` in the ``Cache-Control`` header.
-Subsequent requests within this time period will pull static content from the browser cache. For these tests disable (local) caching using Chrome Developer tools.
+Subsequent requests within this time period will pull static content from the browser cache. For these tests disable (local) caching.
 
 **From the Windows Jump Host, open a new browser tab then open Chrome Developer tools.**
 
@@ -91,9 +91,12 @@ Subsequent requests within this time period will pull static content from the br
 **Disable the local cache.**
 
 .. image:: /_static/no-cache.png
+   :width: 400pt
 
-Refresh the page. Notice that all content except ``index.html`` is being served from cache (``X-Proxy-Cache: HIT``).
+Refresh the page in your browser. Notice that all content except ``index.html`` is being served from cache (``X-Proxy-Cache: HIT``).
 
+.. image:: /_static/hit.png
+   :width: 400pt
 **Purge the cache.**
 
 .. note:: Execute these commands from the NGINX Plus Master instance.
@@ -103,6 +106,9 @@ Refresh the page. Notice that all content except ``index.html`` is being served 
     curl -v -X PURGE http://f5-app.nginx-udf.internal/*
 
 Refresh the page in your browser **just one time**. Look at the ``X-Proxy-Cache`` value for static content (.css, .js, .png) to verify that the cache was purged (``X-Proxy-Cache: MISS``).
+
+.. image:: /_static/miss.png
+   :width: 400pt
 
 .. _`admin guide`: https://docs.nginx.com/nginx/admin-guide/content-cache/content-caching/
 

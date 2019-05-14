@@ -53,7 +53,7 @@ The state file can be modified only with configuration commands from the API int
 .. image:: /_static/upstreamupdate.png
    :width: 200pt
 
-**Using the Dashboard, Remove one or more upstream servers from the "F5App" upstream group**
+**Using the Dashboard, Remove one or more upstream servers from the "F5App" upstream group.**
 
 Click the pencil icon, then the radio button of the upstream server(s) to be removed. 
 Click the ``Edit Selected`` button followed by ``Remove`` (this dialogue will look different if only one upstream server is selected).
@@ -61,7 +61,7 @@ Click the ``Edit Selected`` button followed by ``Remove`` (this dialogue will lo
 .. image:: /_static/editupstream1.png
    :width: 400pt
 
-**Using the Dashboard, Remove one or more upstream servers from the "nginxApp" upstream group**
+**Using the Dashboard, Remove one or more upstream servers from the "nginxApp" upstream group.**
 
 Perform the same task for the ``nginxApp`` upstream. 
 

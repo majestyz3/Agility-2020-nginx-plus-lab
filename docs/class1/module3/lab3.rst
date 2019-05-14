@@ -55,7 +55,7 @@ Using runtime state sharing, this persistence information can be shared across t
 
 .. note:: Reload the NGINX Configuration (``sudo nginx -t && sudo nginx -s reload``)
 
-.. note:: Resync the NGINX Configuration with the sync script (``sudo nginx-sync.sh``))
+.. note:: Resync the NGINX Configuration with the sync script (``sudo nginx-sync.sh``)
 
 Verify Runtime State Sharing
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -55,11 +55,11 @@ Verify NGINX Plus is running
 
 .. code:: shell
 
-  ##Content Removed
+  # Content Removed
   <h1>Welcome to nginx!</h1>
   <p>If you see this page, the nginx web server is successfully installed and
   working. Further configuration is required.</p>
-  ##Content Removed
+  # Content Removed
 
 NGINX Plus is now installed and running on the NGINX Plus Master instance.
 

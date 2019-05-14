@@ -1,8 +1,8 @@
 Health Checks
 --------------------------
 
-For passive health checks, Nginx and Nginx Plus monitor transactions as they happen, and try to resume failed connections.
-If the transaction cannot be resumed, Nginx open source and Nginx Plus mark the server as unavailable and temporarily stop sending it requests until the server marked active again.
+For passive health checks, NGINX and NGINX Plus monitor transactions as they happen, and try to resume failed connections.
+If the transaction cannot be resumed, NGINX open source and NGINX Plus mark the server as unavailable and temporarily stop sending it requests until the server marked active again.
 
 The conditions under which an upstream server is marked unavailable are defined for each upstream server with parameters to the server directive in the upstream block.
 For example:
@@ -16,7 +16,7 @@ For example:
 
 Active Health Checks
 ~~~~~~~~~~~~~~~~~~~~
-Nginx Plus can periodically check the health of upstream servers by sending special ``health‑check`` requests to each server and verifying 
+NGINX Plus can periodically check the health of upstream servers by sending special ``health‑check`` requests to each server and verifying 
 the correct response.
 For example:
 
@@ -29,9 +29,9 @@ For example:
       }
   }
 
-By default, every five seconds Nginx Plus sends a request for “/” to each server in the backend group. 
+By default, every five seconds NGINX Plus sends a request for “/” to each server in the backend group. 
 If any communication error or timeout occurs (the server responds with a status code outside the range from 200 through 399) the health check fails.
-If the server is marked as unhealthy Nginx Plus does not send client requests to it until it once again passes a health check. To allow the worker processes to use the same set of counters to keep track of responses from the servers in an upstream group use a shared memory zone (``zone``).
+If the server is marked as unhealthy NGINX Plus does not send client requests to it until it once again passes a health check. To allow the worker processes to use the same set of counters to keep track of responses from the servers in an upstream group use a shared memory zone (``zone``).
 
 ``health_check`` supports the following parameters:
 - port
@@ -44,7 +44,7 @@ If the server is marked as unhealthy Nginx Plus does not send client requests to
   
 Defining Custom Conditions
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
-Nginx Plus can use custom conditions that the response must satisfy for the server to pass the health check. 
+NGINX Plus can use custom conditions that the response must satisfy for the server to pass the health check. 
 The conditions are defined in a ``match`` block, which is referenced in the match parameter of the health_check directive.
 For example:
 
@@ -75,6 +75,7 @@ To keep the configuration tidy, ``match`` blocks will kept in their file apart f
         status 200-399;
         body !~ "maintenance mode";
     }
+    EOF
 
 **Update the server blocks.**
 
@@ -93,7 +94,6 @@ To keep the configuration tidy, ``match`` blocks will kept in their file apart f
             health_check match=f5_ok;
         }
     }
-    EOF
 
     server {
         listen 80;
@@ -113,6 +113,6 @@ To keep the configuration tidy, ``match`` blocks will kept in their file apart f
     }
     EOF
 
-.. note:: Reload the Nginx Configuration (``sudo nginx -t && sudo nginx -s reload``)
+.. note:: Reload the NGINX Configuration (``sudo nginx -t && sudo nginx -s reload``)
 
-Nginx Plus is now monitoring upstreams with active health checks.
+NGINX Plus is now monitoring upstreams with active health checks.

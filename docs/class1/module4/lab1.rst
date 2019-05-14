@@ -1,7 +1,7 @@
 Dashboard and API Configuration
 -----------------------------------------
 
-This lab walks through configuring the Nginx Plus Dashboard and API.
+This lab walks through configuring the NGINX Plus Dashboard and API.
 
 **Deploy the API and dashboard configuration.**
 
@@ -34,9 +34,9 @@ This lab walks through configuring the Nginx Plus Dashboard and API.
     }
     EOF
 
-.. note:: Reload the Nginx Configuration (``sudo nginx -t && sudo nginx -s reload``)
+.. note:: Reload the NGINX Configuration (``sudo nginx -t && sudo nginx -s reload``)
 
-Typically, the Nginx API is exposed on port 8080 and some form of authentication is configured.
+Typically, the NGINX API is exposed on port 8080 and some form of authentication is configured.
 This lab uses a ``server_name`` directive and does not implement security.
 
 

@@ -1,7 +1,7 @@
-Lab – Share Zone information Across the Cluster
+Share Zone information Across the Cluster
 -----------------------------------------------
 
-Nginx Plus can perform runtime state sharing within a cluster for the following directives:
+NGINX Plus can perform runtime state sharing within a cluster for the following directives:
 
 - `sticky learn`_
 - `request limit`_
@@ -10,9 +10,9 @@ Nginx Plus can perform runtime state sharing within a cluster for the following 
 Configure Sticky Learn 
 ~~~~~~~~~~~~~~~~~~~~~~
 
-Nginx Plus offers a persistence method where cookies are learned from *Set-Cookie* headers in HTTP responses. 
-The F5 demo app sets a session cookie called ``_nginxPlusLab`` with a 30 second expiry.
-Using ``sticky learn`` Nginx Plus will persist a client to the container where the original request (with no cookie) was load balanced.
+NGINX Plus offers a persistence method where cookies are learned from *Set-Cookie* headers in HTTP responses. 
+The F5 demo app sets a session cookie called ``_nginxPlusLab`` with a 60 second expiry.
+Using ``sticky learn`` NGINX Plus will persist a client to the container where the original request (with no cookie) was load balanced.
 Using runtime state sharing, this persistence information can be shared across the cluster.
 
 **Update the upstream configuration to use ``sticky learn``.**
@@ -53,7 +53,7 @@ Using runtime state sharing, this persistence information can be shared across t
     }
     EOF
 
-.. note:: Reload the Nginx Configuration (``sudo nginx -t && sudo nginx -s reload``)
+.. note:: Reload the NGINX Configuration (``sudo nginx -t && sudo nginx -s reload``)
 
 Verify Runtime State Sharing
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -66,20 +66,20 @@ Verify Runtime State Sharing
 **Click on the ``BIG-IP App`` bookmark.**
 
 This request hits a BIG-IP virtual server.
-A pool configured for round robin load balancing containing the 3 Nginx Plus instances is attached.
+A pool configured for round robin load balancing containing the 3 NGINX Plus instances is attached.
 This response should have the *Set-Cookie* header for the ``_nginxPlusLab`` cookie.
 
 Take note of the ``X-Lab-NGINX`` and ``X-Lab-Origin`` headers.
-The ``X-Lab-NGINX`` header shows which Nginx instance was the result of the BIG-IP's load balancing decision.
-The ``X-Lab-Origin`` header shows the docker container chosen by Nginx Plus's load balancing.
+The ``X-Lab-NGINX`` header shows which NGINX instance was the result of the BIG-IP's load balancing decision.
+The ``X-Lab-Origin`` header shows the docker container chosen by NGINX Plus's load balancing.
 
 .. image:: /_static/setcookie.png
    :width: 400pt
 
 **Refresh the page multiple times.**
 
-You should notice the Nginx Plus instance (``X-Lab-NGINX``) changing while the Origin container (``X-Lab-Origin``) stays the same.
-This is because each Nginx Plus instance in the cluster has the necessary persistence information from runtime sharing ``sticky learn`` data to make the correct load balancing decision.
+You should notice the NGINX Plus instance (``X-Lab-NGINX``) changing while the Origin container (``X-Lab-Origin``) stays the same.
+This is because each NGINX Plus instance in the cluster has the necessary persistence information from runtime sharing ``sticky learn`` data to make the correct load balancing decision.
 
 .. image:: /_static/stick1.png
    :width: 400pt

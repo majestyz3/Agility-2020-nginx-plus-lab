@@ -1,12 +1,12 @@
-Nginx Plus Caching
+NGINX Plus Caching
 -------------------
 
-Nginx and Nginx Plus are commonly deployed as a caching tier between a load balancing tier and the application server tier.
+NGINX and NGINX Plus are commonly deployed as a caching tier between a load balancing tier and the application server tier.
 
 .. image:: /_static/cache-flow.png
 
 This lab explores a simple caching configuration. Detailed information about caching configuration directives can be found in the `admin guide`_. 
-In the lab example, Nginx Plus will cache content by respecting the ``Cache-Control`` header in the response.
+In the lab example, NGINX Plus will cache content by respecting the ``Cache-Control`` header in the response.
 Content with a ``Cache-Control`` header containing ``max-age=0`` will not be cached by default.
 
 Add a cache
@@ -40,6 +40,9 @@ Add a cache
 
             proxy_cache f5AppCache;
             proxy_cache_purge \$purge_method;
+
+            proxy_ignore_headers Set-Cookie;
+            add_header X-Proxy-Cache \$upstream_cache_status;
         }
     }
 
@@ -61,7 +64,7 @@ Add a cache
     }
     EOF
 
-.. note:: Reload the Nginx Configuration (``sudo nginx -t && sudo nginx -s reload``)
+.. note:: Reload the NGINX Configuration (``sudo nginx -t && sudo nginx -s reload``)
 
 This configurartion defines a ``proxy_cache_path`` directory on the local file system, a shared memory zone where hashed keys for cached items are stored, and an inactivity timeout.
 The ``proxy_cache`` is referenced in the server block. Additionally, method for purging the cache (sending a request with an HTTP verb of ``PURGE``) is defined.
@@ -69,27 +72,37 @@ The ``proxy_cache`` is referenced in the server block. Additionally, method for 
 Several methods for signaling a cache purge could be created -- a magic header, requests from a certian IP address, etc.
 In production usage, the ability to make a cache invalidating request should be protected in a suitable manner. This lab provides no security around cache invalidating requests.
 
+For lab purposes, this configuration adds the ``X-Proxy-Cache`` header to show cache hits, misses and ignores.
+The configuration also instructs Nginx Plus to ignore ``Set-Cookie`` headers as thier presence will preven caching.
 
 Invalidating Cached items
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-**Purge a single item from the cache.**
+**Populate the cache.**
+
+The ``F5 App`` application is configured for a short 120 second ``Max-Age`` in the ``Cache-Control`` header.
+Subsequent requests within this time period will pull static content from the browser cache. For these tests disable (local) caching using Chrome Developer tools.
+
+**From the Windows Jump Host, open a new browser tab then open Chrome Developer tools.**
+
+.. image:: /_static/developer.png
+   :width: 300pt
+
+**Disable the local cache.**
+
+.. image:: /_static/no-cache.png
+
+Refresh the page. Notice that all content except ``index.html`` is being served from cache (``X-Proxy-Cache: HIT``).
+
+**Purge the cache.**
 
 .. note:: Execute these commands from the NGINX Plus Master instance.
 
 .. code:: shell
 
-    curl -v -X PURGE http://f5-app.nginx-udf.internal/f5-logo.png
-
-**Purge the entire associated cache.**
-
-.. code:: shell
-
     curl -v -X PURGE http://f5-app.nginx-udf.internal/*
 
-An expected HTTP response code for cache invalidating requests is "*HTTP/1.1 204 No Content*".
-
-.. todo:: Show cache hits and purging.
+Refresh the page in your browser **just one time**. Look at the ``X-Proxy-Cache`` value for static content (.css, .js, .png) to verify that the cache was purged (``X-Proxy-Cache: MISS``).
 
 .. _`admin guide`: https://docs.nginx.com/nginx/admin-guide/content-cache/content-caching/
 

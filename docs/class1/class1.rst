@@ -1,14 +1,14 @@
 NGINX Plus Introduction
 ================================
 
-.. TODO:: Need class description
-
 In this class we will cover the following NGINX Plus concepts:
 
+- NGINX Plus installation
 - Load Balancing Configuration
-- ADC Features
-  - Session Persistence
+  - Syntax
   - Caching
+- State Sharing
+  - Sticky Learn
 - Dashboard and API
 - Service Discovery
 

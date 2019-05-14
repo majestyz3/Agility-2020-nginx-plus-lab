@@ -61,7 +61,7 @@ NGINX Plus Configuration
     }
     EOF
 
-.. note:: Reload the Nginx Configuration (``sudo nginx -t && sudo nginx -s reload``)
+.. note:: Reload the NGINX Configuration (``sudo nginx -t && sudo nginx -s reload``)
 
 View Upstream in Dashboard
 ~~~~~~~~~~~~~~~~~~~~~~~~~~

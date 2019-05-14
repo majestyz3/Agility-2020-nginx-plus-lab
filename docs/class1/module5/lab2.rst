@@ -24,11 +24,11 @@ Scale the ``http`` service up or down as desired.
 Query the SRV Record
 ~~~~~~~~~~~~~~~~~~~~
 
-In this example, Nginx Plus performs service discovery by querying the following records.
+In this example, NGINX Plus performs service discovery by querying the following records.
 
 **Query the SRV records manually.**
 
-.. note:: Execute these commands on the Docker Host or Nginx Plus Master instance.
+.. note:: Execute these commands on the Docker Host or NGINX Plus Master instance.
 
 .. code:: shell
 

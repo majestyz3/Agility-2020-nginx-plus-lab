@@ -22,8 +22,9 @@ Cluster configuration is performed in the ``stream`` context (note this command 
     }
     EOF
 
-.. note:: Restart the Nginx daemon for these changes to take effect (``sudo systemctl restart nginx``)
+.. note:: Restart the NGINX daemon for these changes to take effect (``sudo systemctl restart nginx``)
 
+An NGINX Plus node will only discover other nodes and start sending updates when it first starts. 
 This configuration defines a TCP listener to be used for ``zone_sync``.
 Nginx Plus instances included in the cluster are defined with ``zone_sync_server`` directives (or with dns via ``resolve``).
 

@@ -1,7 +1,7 @@
 Explore the Dashboard
 -----------------------------------------
 
-Use the provided bookmark on the Windows Jump Host to access the Nginx Plus Dashboard.
+Use the provided bookmark on the Windows Jump Host to access the NGINX Plus Dashboard.
 
 .. image:: /_static/plusdashboard.png
 

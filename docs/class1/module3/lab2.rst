@@ -1,9 +1,9 @@
 Configuration Synchronization
 -----------------------------------------
 
-To be synchronized, shared memory zones must be identically named across Nginx Plus cluster members.
+To be synchronized, shared memory zones must be identically named across NGINX Plus cluster members.
 One way to ensure common shared memory zones exist across the cluster is to synchronize the configuration.
-Nginx provides a package/script for this task.
+NGINX provides a package/script for this task.
 
 .. image:: /_static/nginx-sync-sh.png
    :width: 500pt
@@ -24,7 +24,7 @@ Nginx provides a package/script for this task.
 
 The script will push configuration in ``CONFPATHS`` to the ``NODES``, omitting configuration files named in ``EXCLUDE``.
 
-**Run nginx-sync.sh.**
+**Install and Run nginx-sync.sh.**
 
 .. code:: shell
 

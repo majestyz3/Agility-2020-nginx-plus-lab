@@ -1,9 +1,9 @@
 NGINX Plus Load Balancing Configuration
-=================================
+=======================================
 
 In this module you will learn about various load balancing features and symantics of NGINX Plus configuration.
 
-(15 min)
+(20 min)
 
 .. toctree::
    :maxdepth: 1

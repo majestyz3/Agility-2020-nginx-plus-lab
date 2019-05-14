@@ -4,7 +4,7 @@ Explore API Endpoints
 Explore the API
 ~~~~~~~~~~~~~~~
 
-The Nginx Plus API has the following top level endpoints:
+The NGINX Plus API has the following top level endpoints:
 
 .. code:: shell
     
@@ -18,14 +18,14 @@ The Nginx Plus API has the following top level endpoints:
     "ssl"
     ]
 
-These endpoints correspond with Nginx Plus build information, process info, connection statistics, configuration blocks, etc.
+These endpoints correspond with NGINX Plus build information, process info, connection statistics, configuration blocks, etc.
 
-**Explore the Nginx Plus API using at least one of the desired methods below.**
+**Explore the NGINX Plus API using at least one of the desired methods below.**
 
 Curl
 ^^^^
 
-.. note:: Execute these examples from the Nginx Plus Master instance.
+.. note:: Execute these examples from the NGINX Plus Master instance.
 
 .. code:: shell
 
@@ -70,10 +70,12 @@ Curl
 Swagger UI
 ^^^^^^^^^^
 
-Swagger UI provides visual documentation of the Nginx Plus API generated from an OpenAPI spec. 
+Swagger UI provides visual documentation of the NGINX Plus API generated from an OpenAPI spec. 
 The Swagger UI generated for the lab is fully functional -- ie. POST and PATCH examples will update the configuration.
 
-.. image:: /_static/plusdashboard.png
+**Open the "Swagger UI" bookmark in Chrome.**
+
+.. image:: /_static/swaggerbook.png
    :width: 300pt
  
 Postman

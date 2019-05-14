@@ -1,20 +1,20 @@
-Installing Nginx Plus
+Installing NGINX Plus
 --------------------------------------
 
-This exercise will cover installation of Nginx Plus in a standalone (CentOS7) instance.
-The UDF environment has three Nginx Plus instances -- Master, Plus2, and Plus3. 
-To save time Nginx Plus has been installed on Plus2 and Plus3. In this lab we will install Nginx Plus on Master.
+This exercise will cover installation of NGINX Plus in a standalone (CentOS7) instance.
+The UDF environment has three NGINX Plus instances -- Master, Plus2, and Plus3. 
+To save time NGINX Plus has been installed on Plus2 and Plus3. In this lab we will install NGINX Plus on Master.
 
 Repository Certificate and Key
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Typically, a customer would log into the `Nginx Plus Customer Portal`_ and download thier ``nginx-repo.crt`` and ``nginx-repo.key`` files. 
-These files are used to authenticate to the Nginx Plus repository in order to retrieve the Nginx Plus package for installation.  
+Typically, a customer would log into the `NGINX Plus Customer Portal`_ and download thier ``nginx-repo.crt`` and ``nginx-repo.key`` files. 
+These files are used to authenticate to the NGINX Plus repository in order to retrieve the NGINX Plus package for installation.  
 For this lab the necessary cert and key have already been provided on the instance in **/etc/ssl/nginx**.
 
-Install Nginx Plus
+Install NGINX Plus
 ~~~~~~~~~~~~~~~~~~~~
 
-.. note:: Execute this command from the Nginx Plus Master instance.
+.. note:: Execute this command from the NGINX Plus Master instance.
 
 .. code:: shell
 
@@ -24,13 +24,13 @@ Install Nginx Plus
   sudo systemctl enable nginx.service && \
   sudo systemctl start nginx.service
 
-These commands install Certificate Authorities certificates, download the repository information from the Nginx customer portal, and install the Nginx Plus package.
-The Nginx service is set to ``enable`` to start on boot. The last command starts the service. Nginx should be running at this time.
+These commands install Certificate Authorities certificates, download the repository information from the NGINX customer portal, and install the NGINX Plus package.
+The NGINX service is set to ``enable`` to start on boot. The last command starts the service. NGINX should be running at this time.
 
-Verify Nginx Plus is running
+Verify NGINX Plus is running
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. note:: Execute these commands on the Nginx Plus Master instance.
+.. note:: Execute these commands on the NGINX Plus Master instance.
 
 **Check the service status from systemd.**
 
@@ -42,7 +42,7 @@ Verify Nginx Plus is running
 
 .. code:: shell
 
-  ● nginx.service - Nginx Plus - high performance web server
+  ● nginx.service - NGINX Plus - high performance web server
    Active: active (running) since Fri 2019-05-10 12:08:14 UTC; 2min 18s ago
 
 **For an additional check, you should be able to curl to localhost port 80.**
@@ -51,7 +51,7 @@ Verify Nginx Plus is running
 
   curl http://localhost
 
-**Verify the output is the default Nginx placeholder page.**
+**Verify the output is the default NGINX placeholder page.**
 
 .. code:: shell
 
@@ -61,6 +61,6 @@ Verify Nginx Plus is running
   working. Further configuration is required.</p>
   ##Content Removed
 
-Nginx Plus is now installed and running on the Nginx Plus Master instance.
+NGINX Plus is now installed and running on the NGINX Plus Master instance.
 
-.. _Nginx Plus Customer Portal: https://cs.nginx.com
+.. _NGINX Plus Customer Portal: https://cs.nginx.com

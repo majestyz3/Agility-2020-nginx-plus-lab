@@ -17,8 +17,17 @@ NGINX Plus queries Consul for DNS SRV records to determine appropiate upstream s
 Docker Configuration
 ~~~~~~~~~~~~~~~~~~~~
 
-All necessary components for Consul and Registrator are already configured on the ``Docker Host``. The Registrator container is listening to the docker unix socket for service changes.
-Service state is then reported to Consul. 
+All necessary components for Consul, Registrator, and an example app are defined in a docker-compose file on the ``Docker Host``.
+The Registrator container is listening to the docker unix socket for service changes.
+Service state is then reported to Consul.
+
+**Create the Consult and Registrator Containers**
+
+.. note:: Execute this command from the Docker Host instance.
+
+.. code:: shell
+
+    docker-compose -f ~/udf-nginx-plus-service-discovery/docker-compose.yml up -d --scale http=0
 
 On the ``Windows Jump Host`` use the Chrome bookmark to view the Consul web interface.
 

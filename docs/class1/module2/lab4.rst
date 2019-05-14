@@ -97,6 +97,7 @@ Refresh the page in your browser. Notice that all content except ``index.html`` 
 
 .. image:: /_static/hit.png
    :width: 400pt
+   
 **Purge the cache.**
 
 .. note:: Execute these commands from the NGINX Plus Master instance.

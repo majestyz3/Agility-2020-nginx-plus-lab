@@ -52,6 +52,8 @@ This lab will end up using several upstreams. In order to keep the configuration
 
 .. note:: Execute these steps on the NGINX Plus Master instance.
 
+**Define the upstream configuration.**
+
 .. code:: shell
 
     sudo bash -c 'cat > /etc/nginx/conf.d/labUpstream.conf' <<EOF
@@ -86,7 +88,7 @@ This example defines the ``zone`` directive. NGINX manages weights independently
 
 Next, the advanced configuration will define multiple server blocks (and some will have multiple locations).
 
-.. note:: Execute this command on the NGINX Plus Master Instance.
+**Define the server block configuration.**
 
 .. code:: shell
 

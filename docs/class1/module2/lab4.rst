@@ -32,11 +32,11 @@ Add a cache
         error_log /var/log/nginx/f5App.error.log info;  
         access_log /var/log/nginx/f5App.access.log combined;
         status_zone f5App;
-        add_header X-Lab-NGINX \$hostname;
 
         location / {
             proxy_pass http://f5App;
             health_check match=f5_ok;
+            add_header X-Lab-NGINX \$hostname;
 
             proxy_cache f5AppCache;
             proxy_cache_purge \$purge_method;

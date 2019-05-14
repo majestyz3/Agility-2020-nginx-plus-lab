@@ -69,12 +69,12 @@ This request hits a BIG-IP virtual server.
 A pool configured for round robin load balancing containing the 3 NGINX Plus instances is attached.
 This response should have the *Set-Cookie* header for the ``_nginxPlusLab`` cookie.
 
+.. image:: /_static/setcookie.png
+   :width: 400pt
+
 Take note of the ``X-Lab-NGINX`` and ``X-Lab-Origin`` headers.
 The ``X-Lab-NGINX`` header shows which NGINX instance was the result of the BIG-IP's load balancing decision.
 The ``X-Lab-Origin`` header shows the docker container chosen by NGINX Plus's load balancing.
-
-.. image:: /_static/setcookie.png
-   :width: 400pt
 
 **Refresh the page multiple times.**
 

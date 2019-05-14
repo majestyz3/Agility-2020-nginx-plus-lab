@@ -72,8 +72,8 @@ The ``proxy_cache`` is referenced in the server block. Additionally, method for 
 Several methods for signaling a cache purge could be created -- a magic header, requests from a certian IP address, etc.
 In production usage, the ability to make a cache invalidating request should be protected in a suitable manner. This lab provides no security around cache invalidating requests.
 
-For lab purposes, this configuration adds the ``X-Proxy-Cache`` header to show cache hits, misses and ignores.
-The configuration also instructs Nginx Plus to ignore ``Set-Cookie`` headers as thier presence will preven caching.
+For lab purposes, this configuration adds the ``X-Proxy-Cache`` header to show cache hits, misses, and ignores.
+The configuration also instructs Nginx Plus to ignore ``Set-Cookie`` headers as thier presence will prevent caching.
 
 Invalidating Cached items
 ~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -97,7 +97,7 @@ Refresh the page in your browser. Notice that all content except ``index.html`` 
 
 .. image:: /_static/hit.png
    :width: 400pt
-   
+
 **Purge the cache.**
 
 .. note:: Execute these commands from the NGINX Plus Master instance.

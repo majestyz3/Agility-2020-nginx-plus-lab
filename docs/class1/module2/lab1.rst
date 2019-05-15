@@ -104,7 +104,7 @@ The following types of blocks are used in the basic configuration:
 
   - **server_name**: When multiple listen directives of the same specificity can handle the request, NGINX will parse the ``Host`` header of the request and match it against this directive.
 
-The log declarations allow access and error logs for this server declaration to be seperated from the general NGINX logs.
+The log declarations allow access and error logs for this server declaration to be separated from the general NGINX logs.
   
 - **Location** - Notice the ``location`` block is nested under the ``server`` block. Once a server context has been selected for a request, the request is evaluated against one or more location blocks to determine what actions need to be taken. The longest match (ie. most specific) will be selected.
 

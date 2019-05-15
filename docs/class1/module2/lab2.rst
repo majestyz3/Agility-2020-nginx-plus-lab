@@ -48,7 +48,7 @@ In this configuration, ``weight`` is enforced on a per-worker basis.
 Multiple Upstreams, Server Blocks, and a Shared Memory Zone
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-This lab will end up using several upstreams. In order to keep the configuration size managable, these will be stored in a seperate file. 
+This lab will end up using several upstreams. In order to keep the configuration size managable, these will be stored in a separate file. 
 
 .. note:: Execute these steps on the NGINX Plus Master instance.
 

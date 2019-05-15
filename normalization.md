@@ -10,5 +10,9 @@ Run through guide 2 times.
 2. Hosting of the Lab Guide -- create a container on the docker host, clone the repo locally, mount a volume.
 3. Rename the blueprint and make it public
 
-4. 
+1. Rename the f5-app and BIG-IP app to make things clearer
+2. update with the clouddocs template
+3. make sure code blocks are shaded.
+
+
 

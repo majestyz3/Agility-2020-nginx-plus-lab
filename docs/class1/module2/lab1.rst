@@ -102,11 +102,11 @@ The following types of blocks are used in the basic configuration:
 
   - **listen**: The ip address / port combination that this server block should respond to. 
 
-  - **server_name**: When multiple listen directives of the same specificity that can handle the request, NGINX will parse the ``Host`` header of the request and match it against this directive.
+  - **server_name**: When multiple listen directives of the same specificity can handle the request, NGINX will parse the ``Host`` header of the request and match it against this directive.
 
 The log declarations allow access and error logs for this server declaration to be seperated from the general NGINX logs.
   
-- **Location** - Notice the ``location`` block is nested under the ``server`` block. Once a server context has been selected for a request, the request is evaluated against one or more location blocks to determine what actions need to be taken.
+- **Location** - Notice the ``location`` block is nested under the ``server`` block. Once a server context has been selected for a request, the request is evaluated against one or more location blocks to determine what actions need to be taken. The longest match (ie. most specific) will be selected.
 
 The **proxy_pass** directive tells NGINX to proxy all requests to the defined ``upstream``.
 

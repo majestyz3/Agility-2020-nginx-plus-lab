@@ -83,7 +83,7 @@ This lab will end up using several upstreams. In order to keep the configuration
     }
     EOF
 
-.. warn:: Do *not* reload the configuration until after the next step.
+.. warning:: Do *not* reload the configuration until after the next step.
 
 This example defines the ``zone`` directive. NGINX manages weights independently per each worker process. NGINX Plus uses a shared memory segment for upstream data 
 (configured with the zone directive), so weights are shared between workers and traffic is distributed more accurately across the instance.

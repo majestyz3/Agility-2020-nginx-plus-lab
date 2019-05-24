@@ -16,7 +16,7 @@ Install NGINX Plus
 
 .. note:: Execute this command from the NGINX Plus Master instance.
 
-.. warn:: Do not perform these steps from the UDF 'Web Shell'. Use a native terminal client or Putty from the Windows Jump Host.
+.. warning:: Do not perform these steps from the UDF 'Web Shell'. Use a native terminal client or Putty from the Windows Jump Host.
 
 .. code:: shell
 

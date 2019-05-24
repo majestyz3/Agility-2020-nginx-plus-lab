@@ -12,7 +12,7 @@ NGINX Plus can perform service discovery in several different ways.
 - `ZooKeeper`_
 
 This lab uses Hashicorp's `Consul`_ to capture service state (with the help of `Registrator`_).
-NGINX Plus queries Consul for DNS SRV records to determine appropiate upstream servers for a specified service.
+NGINX Plus queries Consul for DNS SRV records to determine appropriate upstream servers for a specified service.
 
 Docker Configuration
 ~~~~~~~~~~~~~~~~~~~~
@@ -39,7 +39,7 @@ The service used in this demo is named ``http``. There are currently no instance
 NGINX Plus Configuration
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
-**Define the upsteam, health check, and server block needed for the demo.**
+**Define the upstream, health check, and server block needed for the demo.**
 
 .. note:: Execute this command on the NGINX Plus Master instance.
 

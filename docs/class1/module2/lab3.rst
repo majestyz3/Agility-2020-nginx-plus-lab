@@ -16,8 +16,7 @@ For example:
 
 Active Health Checks
 ~~~~~~~~~~~~~~~~~~~~
-NGINX Plus can periodically check the health of upstream servers by sending special ``health‑check`` requests to each server and verifying 
-the correct response.
+NGINX Plus can periodically check the health of upstream servers by sending special ``health‑check`` requests to each server and verifying the correct response.
 For example:
 
 .. code:: shell

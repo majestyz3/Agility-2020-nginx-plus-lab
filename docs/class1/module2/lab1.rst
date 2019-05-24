@@ -30,8 +30,10 @@ If successful, the command output will be:
 .. image:: /_static/reload.png
    :width: 500pt
 
-During the reload procedure, a ``SIGHUP`` is sent the kernel. The master NGINX process evaluates the new config and checks for ``emerg`` level errors.
-Lastly, new workers are forked while old workers gracefully shut down. This worker model is important to understand as some features require state sharing across the workers.
+During the reload procedure, a ``SIGHUP`` is sent the kernel.
+The master NGINX process evaluates the new config and checks for ``emerg`` level errors.
+Lastly, new workers are forked while old workers gracefully shut down.
+This worker model is important to understand as some features require state sharing across the workers.
 
 
 Blocks and Directives

@@ -1,97 +1,117 @@
-Share Zone information Across the Cluster
------------------------------------------------
+Health Checks
+--------------------------
 
-NGINX Plus can perform runtime state sharing within a cluster for the following directives:
+For passive health checks, NGINX and NGINX Plus monitor transactions as they happen, and try to resume failed connections.
+If the transaction cannot be resumed, NGINX open source and NGINX Plus mark the server as unavailable and temporarily stop sending it requests until the server marked active again.
 
-- `sticky learn`_
-- `request limit`_
-- `key value storage`_
+The conditions under which an upstream server is marked unavailable are defined for each upstream server with parameters to the server directive in the upstream block.
+For example:
 
-Configure Sticky Learn 
-~~~~~~~~~~~~~~~~~~~~~~
+.. code:: shell
 
-NGINX Plus offers a persistence method where cookies are learned from *Set-Cookie* headers in HTTP responses. 
-The F5 demo app sets a session cookie called ``_nginxPlusLab`` with a 60 second expiry.
-Using ``sticky learn`` NGINX Plus will persist a client to the container where the original request (with no cookie) was load balanced.
-Using runtime state sharing, this persistence information can be shared across the cluster.
+  upstream backend {
+      server backend1.example.com;
+      server backend2.example.com max_fails=3 fail_timeout=30s;
+  }
 
-**Update the upstream configuration to use ``sticky learn``.**
+Active Health Checks
+~~~~~~~~~~~~~~~~~~~~
+NGINX Plus can periodically check the health of upstream servers by sending special ``health‑check`` requests to each server and verifying the correct response.
+For example:
 
-.. note:: Execute these steps on the NGINX Plus Master Instance.
+.. code:: shell
 
-.. code:: 
+  server {
+      location / {
+          proxy_pass http://backend;
+          health_check;
+      }
+  }
 
-    sudo bash -c 'cat > /etc/nginx/conf.d/labUpstream.conf' <<EOF
-    upstream f5App { 
-        least_conn;
-        zone f5App 64k;
-        server docker.nginx-udf.internal:8080;  
-        server docker.nginx-udf.internal:8081;  
-        server docker.nginx-udf.internal:8082;
+By default, every five seconds NGINX Plus sends a request for “/” to each server in the backend group. 
+If any communication error or timeout occurs (the server responds with a status code outside the range from 200 through 399) the health check fails.
+If the server is marked as unhealthy NGINX Plus does not send client requests to it until it once again passes a health check. To allow the worker processes to use the same set of counters to keep track of responses from the servers in an upstream group use a shared memory zone (``zone``).
 
-        sticky learn
-        create=\$upstream_cookie__nginxPlusLab
-        lookup=\$cookie__nginxPlusLab
-        timeout=1h
-        zone=client_sessions:1m sync;
+``health_check`` supports the following parameters:
+- port
+- interval
+- fails
+- passes
+- uri
+- match
+
+  
+Defining Custom Conditions
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+NGINX Plus can use custom conditions that the response must satisfy for the server to pass the health check. 
+The conditions are defined in a ``match`` block, which is referenced in the match parameter of the health_check directive.
+For example:
+
+.. code:: shell
+
+  http {
+      #...
+      match server_ok {
+          # tests are here
+      }
+  }
+
+Refer to the block from the health_check directive by specifying the ``match`` parameter and the name of the match block.
+To keep the configuration tidy, ``match`` blocks will kept in their file apart from upstream blocks and server blocks.
+
+.. note:: Execute these commands on the NGINX Plus Master instance.
+
+**Create the "match" blocks.**
+
+.. code:: shell
+
+    sudo bash -c 'cat > /etc/nginx/conf.d/labMatch.conf' <<EOF
+    match f5_ok {
+        status 200;
     }
 
-    upstream nginxApp { 
-        least_conn;
-        zone nginxApp 64k;
-        server docker.nginx-udf.internal:8083;  
-        server docker.nginx-udf.internal:8084;  
-        server docker.nginx-udf.internal:8085;
+    match nginx_ok {
+        status 200-399;
+        body !~ "maintenance mode";
+    }
+    EOF
+
+**Update the server blocks.**
+
+.. code:: shell
+
+    sudo bash -c 'cat > /etc/nginx/conf.d/labApp.conf' <<EOF
+    server {
+        listen 80 default_server;
+        server_name f5-app.nginx-udf.internal bigip-app.nginx-udf.internal;
+        error_log /var/log/nginx/f5App.error.log info;  
+        access_log /var/log/nginx/f5App.access.log combined;
+        status_zone f5App;
+
+        location / {
+            proxy_pass http://f5App;
+            health_check match=f5_ok;
+        }
     }
 
-    upstream nginxApp-text {
-        least_conn;
-        zone nginxApp 64k;
-        server docker.nginx-udf.internal:8086;  
-        server docker.nginx-udf.internal:8087;  
-        server docker.nginx-udf.internal:8088;
+    server {
+        listen 80;
+        server_name nginx-app.nginx-udf.internal;
+        error_log /var/log/nginx/nginxApp.error.log info;  
+        access_log /var/log/nginx/nginxApp.access.log combined;
+        status_zone nginxApp;
+
+        location /text {
+            proxy_pass http://nginxApp-text;
+            health_check match=nginx_ok;
+        }
+        location / {
+            proxy_pass http://nginxApp;
+            health_check match=nginx_ok;
+        }
     }
     EOF
 
 .. note:: Reload the NGINX Configuration (``sudo nginx -t && sudo nginx -s reload``)
 
-.. note:: Resync the NGINX Configuration with the sync script (``sudo nginx-sync.sh``)
-
-Verify Runtime State Sharing
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-**From the Windows Jump Host, open a new browser tab then open Chrome Developer tools.**
-
-.. image:: /_static/developer.png
-   :width: 300pt
-
-**Click on the ``BIG-IP App`` bookmark.**
-
-This request hits a BIG-IP virtual server.
-A pool configured for round robin load balancing containing the 3 NGINX Plus instances is attached.
-This response should have the *Set-Cookie* header for the ``_nginxPlusLab`` cookie.
-
-.. image:: /_static/setcookie.png
-   :width: 400pt
-
-Take note of the ``X-Lab-NGINX`` and ``X-Lab-Origin`` headers.
-The ``X-Lab-NGINX`` header shows which NGINX instance was the result of the BIG-IP's load balancing decision.
-The ``X-Lab-Origin`` header shows the docker container chosen by NGINX Plus's load balancing.
-
-**Refresh the page multiple times.**
-
-You should notice the NGINX Plus instance (``X-Lab-NGINX``) changing while the Origin container (``X-Lab-Origin``) stays the same.
-This is because each NGINX Plus instance in the cluster has the necessary persistence information from runtime sharing ``sticky learn`` data to make the correct load balancing decision.
-
-.. image:: /_static/stick1.png
-   :width: 400pt
-
-.. image:: /_static/stick2.png
-   :width: 400pt
-
-
-
-
-.. _`sticky learn`: https://docs.nginx.com/nginx/admin-guide/load-balancer/http-load-balancer/#sticky
-.. _`request limit`: https://docs.nginx.com/nginx/admin-guide/security-controls/controlling-access-proxied-http/#limit_req
-.. _`key value storage`: https://docs.nginx.com/nginx/admin-guide/security-controls/blacklisting-ip-addresses/
+NGINX Plus is now monitoring upstreams with active health checks.

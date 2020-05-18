@@ -1,90 +1,97 @@
-Explore API Endpoints
------------------------------------------
+Share Zone information Across the Cluster
+-----------------------------------------------
 
-Explore the API
-~~~~~~~~~~~~~~~
+NGINX Plus can perform runtime state sharing within a cluster for the following directives:
 
-The NGINX Plus API has the following top level endpoints:
+- `sticky learn`_
+- `request limit`_
+- `key value storage`_
 
-.. code:: shell
-    
-    [
-    "nginx",
-    "processes",
-    "connections",
-    "slabs",
-    "http",
-    "stream",
-    "ssl"
-    ]
+Configure Sticky Learn 
+~~~~~~~~~~~~~~~~~~~~~~
 
-These endpoints correspond with NGINX Plus build information, process info, connection statistics, configuration blocks, etc.
+NGINX Plus offers a persistence method where cookies are learned from *Set-Cookie* headers in HTTP responses. 
+The F5 demo app sets a session cookie called ``_nginxPlusLab`` with a 60 second expiry.
+Using ``sticky learn`` NGINX Plus will persist a client to the container where the original request (with no cookie) was load balanced.
+Using runtime state sharing, this persistence information can be shared across the cluster.
 
-**Explore the NGINX Plus API using at least one of the desired methods below.**
+**Update the upstream configuration to use ``sticky learn``.**
 
-Curl
-^^^^
+.. note:: Execute these steps on the NGINX Plus Master Instance.
 
-.. note:: Execute these examples from the NGINX Plus Master instance.
+.. code:: 
 
-.. code:: shell
+    sudo bash -c 'cat > /etc/nginx/conf.d/labUpstream.conf' <<EOF
+    upstream f5App { 
+        least_conn;
+        zone f5App 64k;
+        server docker.nginx-udf.internal:8080;  
+        server docker.nginx-udf.internal:8081;  
+        server docker.nginx-udf.internal:8082;
 
-    curl -s http://master.nginx-udf.internal/api/4 | jq .
-    [
-    "nginx",
-    "processes",
-    "connections",
-    "slabs",
-    "http",
-    "stream",
-    "ssl"
-    ]
-
-.. code:: shell
-
-    curl -s http://master.nginx-udf.internal/api/4/nginx | jq .
-    {
-    "version": "1.15.10",
-    "build": "nginx-plus-r18",
-    "address": "10.1.1.6",
-    "generation": 1,
-    "load_timestamp": "2019-05-13T12:03:59.958Z",
-    "timestamp": "2019-05-13T12:48:10.419Z",
-    "pid": 1238,
-    "ppid": 1236
+        sticky learn
+        create=\$upstream_cookie__nginxPlusLab
+        lookup=\$cookie__nginxPlusLab
+        timeout=1h
+        zone=client_sessions:1m sync;
     }
 
-.. code:: shell
+    upstream nginxApp { 
+        least_conn;
+        zone nginxApp 64k;
+        server docker.nginx-udf.internal:8083;  
+        server docker.nginx-udf.internal:8084;  
+        server docker.nginx-udf.internal:8085;
+    }
 
-    curl -s http://master.nginx-udf.internal/api/4/http | jq .
-    [
-    "requests",
-    "server_zones",
-    "caches",
-    "keyvals",
-    "upstreams"
-    ]
+    upstream nginxApp-text {
+        least_conn;
+        zone nginxApp 64k;
+        server docker.nginx-udf.internal:8086;  
+        server docker.nginx-udf.internal:8087;  
+        server docker.nginx-udf.internal:8088;
+    }
+    EOF
 
-**If desired, query various endpoints under ``/api/4/http/``.**
+.. note:: Reload the NGINX Configuration (``sudo nginx -t && sudo nginx -s reload``)
 
-Swagger UI
-^^^^^^^^^^
+.. note:: Resync the NGINX Configuration with the sync script (``sudo nginx-sync.sh``)
 
-Swagger UI provides visual documentation of the NGINX Plus API generated from an OpenAPI spec. 
-The Swagger UI generated for the lab is fully functional -- ie. POST and PATCH examples will update the configuration.
+Verify Runtime State Sharing
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-**Open the "Swagger UI" bookmark in Chrome.**
+**From the Windows Jump Host, open a new browser tab then open Chrome Developer tools.**
 
-.. image:: /_static/swaggerbook.png
+.. image:: /_static/developer.png
    :width: 300pt
- 
-Postman
-^^^^^^^
 
-A PostMan collection that targets several API endpoints is provided on the Windows Jump Host for this lab.
+**Click on the ``BIG-IP App`` bookmark.**
 
-**Walk through the "Explore" and "Reset Stats" folders of the collection.**
+This request hits a BIG-IP virtual server.
+A pool configured for round robin load balancing containing the 3 NGINX Plus instances is attached.
+This response should have the *Set-Cookie* header for the ``_nginxPlusLab`` cookie.
 
-.. image:: /_static/PMcollection.png
-   :width: 250pt
+.. image:: /_static/setcookie.png
+   :width: 400pt
 
+Take note of the ``X-Lab-NGINX`` and ``X-Lab-Origin`` headers.
+The ``X-Lab-NGINX`` header shows which NGINX instance was the result of the BIG-IP's load balancing decision.
+The ``X-Lab-Origin`` header shows the docker container chosen by NGINX Plus's load balancing.
+
+**Refresh the page multiple times.**
+
+You should notice the NGINX Plus instance (``X-Lab-NGINX``) changing while the Origin container (``X-Lab-Origin``) stays the same.
+This is because each NGINX Plus instance in the cluster has the necessary persistence information from runtime sharing ``sticky learn`` data to make the correct load balancing decision.
+
+.. image:: /_static/stick1.png
+   :width: 400pt
+
+.. image:: /_static/stick2.png
+   :width: 400pt
+
+
+
+
+.. _`sticky learn`: https://docs.nginx.com/nginx/admin-guide/load-balancer/http-load-balancer/#sticky
+.. _`request limit`: https://docs.nginx.com/nginx/admin-guide/security-controls/controlling-access-proxied-http/#limit_req
+.. _`key value storage`: https://docs.nginx.com/nginx/admin-guide/security-controls/blacklisting-ip-addresses/

@@ -1,127 +1,68 @@
-Base Configuration
------------------------------------------
+Installing NGINX Plus
+--------------------------------------
 
-The UDF lab blueprint provides several containers running web applications on the ``Docker Host`` instance.
-These containers will be used as ``upstreams`` (or "pool members" in F5 terminology) throughout the lab.
-All necessary containers should be running when the UDF blueprint completes booting.
+This exercise will cover installation of NGINX Plus in a standalone (CentOS7) instance.
+The UDF environment has three NGINX Plus instances -- Master, Plus2, and Plus3. 
+To save time NGINX Plus has been installed on Plus2 and Plus3. In this lab we will install NGINX Plus on Master.
 
-Throughout the lab NGINX Plus configuration will be deployed directly from bash.
-In order to prevent tedious work in a text editor, the lab provides bash commands using concatenation and redirection. 
-When directed, simply copy and paste the commands on the specified host.
+Repository Certificate and Key
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Typically, a customer would log into the `NGINX Plus Customer Portal`_ and download thier ``nginx-repo.crt`` and ``nginx-repo.key`` files. 
+These files are used to authenticate to the NGINX Plus repository in order to retrieve the NGINX Plus package for installation.  
+For this lab the necessary cert and key have already been provided on the instance in **/etc/ssl/nginx**.
 
-Reloading the NGINX Configuration
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Install NGINX Plus
+~~~~~~~~~~~~~~~~~~~~
 
-Frequently throughout this lab you will be asked to "reload the NGINX configuration". Use the following pattern:
+.. note:: Execute this command from the NGINX Plus Master instance.
 
-.. code:: shell
-
-  sudo nginx -t && sudo nginx -s reload
-
-The first command, ``nginx -t``, checks the configuration syntax. The second command, ``nginx -s reload``, reloads the configuration.
-
-If successful, the command output will be:
+.. warning:: Do not perform these steps from the UDF 'Web Shell'. Use a native terminal client or Putty from the Windows Jump Host.
 
 .. code:: shell
 
-  nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
-  nginx: configuration file /etc/nginx/nginx.conf test is successful
+  sudo yum install -y ca-certificates && \
+  sudo wget -P /etc/yum.repos.d https://cs.nginx.com/static/files/nginx-plus-7.repo && \
+  sudo yum install -y nginx-plus && \
+  sudo systemctl enable nginx.service && \
+  sudo systemctl start nginx.service
 
-.. image:: /_static/reload.png
-   :width: 500pt
+These commands install Certificate Authorities certificates, download the repository information from the NGINX customer portal, and install the NGINX Plus package.
+The NGINX service is set to ``enable`` to start on boot. The last command starts the service. NGINX should be running at this time.
 
-During the reload procedure, a ``SIGHUP`` is sent the kernel.
-The master NGINX process evaluates the new config and checks for ``emerg`` level errors.
-Lastly, new workers are forked while old workers gracefully shut down.
-This worker model is important to understand as some features require state sharing across the workers.
+Verify NGINX Plus is running
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+.. note:: Execute these commands on the NGINX Plus Master instance.
 
-Blocks and Directives
-~~~~~~~~~~~~~~~~~~~~~
+**Check the service status from systemd.**
 
-.. image:: /_static/confcontexts.png
-   :width: 500pt
+.. code:: shell
 
-NGINX configurations are made up nested contexts. All contexts are a child of ``Main``. The top-level contexts are:
+  systemctl status nginx
 
-- **Events**
-  - This context is used to set global options that affect how NGINX handles connections at a general level.
+**Verify the output shows the service running:**
 
-- **HTTP**
-  - This lab focusses on using NGINX Plus as a reverse proxy. Consequently, the ``http`` context will hold the majority of the configuration.
+.. code:: shell
 
-- **Stream**
-  - The ``stream`` context provides options for TCP/UDP load balancing. This context will be used later to configure clustering between NGINX plus instances.
+  ● nginx.service - NGINX Plus - high performance web server
+   Active: active (running) since Fri 2019-05-10 12:08:14 UTC; 2min 18s ago
 
-This lab will focus mainly configuration blocks under the ``http`` context.
+**For an additional check, you should be able to curl to localhost port 80.**
 
-Create the Base Configuration
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.. code:: shell
 
-Start by creating a basic load balancing configuration.
+  curl http://localhost
 
-.. note:: Execute this command on the NGINX Plus Master instance.
+**Verify the output is the default NGINX placeholder page.**
 
-.. code:: 
-  
-  sudo mv /etc/nginx/conf.d/default.conf /etc/nginx/conf.d/default.conf.old && \
-  sudo bash -c 'cat > /etc/nginx/conf.d/labApp.conf' <<EOF
-  upstream f5App { 
-      server docker.nginx-udf.internal:8080;  
-      server docker.nginx-udf.internal:8081;  
-      server docker.nginx-udf.internal:8082;
-  }
+.. code:: shell
 
-  server {
-      listen 80;
-      error_log /var/log/nginx/f5App.error.log info;  
-      access_log /var/log/nginx/f5App.access.log combined;
+  # Content Removed
+  <h1>Welcome to nginx!</h1>
+  <p>If you see this page, the nginx web server is successfully installed and
+  working. Further configuration is required.</p>
+  # Content Removed
 
-      location / {
-          proxy_pass http://f5App;
+NGINX Plus is now installed and running on the NGINX Plus Master instance.
 
-      }
-  }
-  EOF
-
-.. note:: Reload the NGINX Configuration (``sudo nginx -t && sudo nginx -s reload``)
-
-The command first renames ``default.conf`` to prevent serving the default page. Next, a configuration is written to ``/etc/nginx/conf.d/labApp.conf``.
-This configuration contained in this is part of the ``http`` context due to the include statement in ``/etc/nginx/nginx.conf``.
-
-.. code::
-
-    http {
-    ##Content Removed##
-    include /etc/nginx/conf.d/*.conf;
-    }
-
-The following types of blocks are used in the basic configuration:
-
-- **Upstream** - This block is used to define and configure ``upstream`` servers -- a named pool of servers that NGINX will proxy requests to. 
-
-- **Server** - NGINX will evaluate each request to determine which ``server`` block should be used. The decision is based on the following directives:
-
-  - **listen**: The ip address / port combination that this server block should respond to. 
-
-  - **server_name**: When multiple listen directives of the same specificity can handle the request, NGINX will parse the ``Host`` header of the request and match it against this directive.
-
-The log declarations allow access and error logs for this server declaration to be separated from the general NGINX logs.
-  
-- **Location** - Notice the ``location`` block is nested under the ``server`` block. Once a server context has been selected for a request, the request is evaluated against one or more location blocks to determine what actions need to be taken. The longest match (ie. most specific) will be selected.
-
-The **proxy_pass** directive tells NGINX to proxy all requests to the defined ``upstream``.
-
-Test the Site
-~~~~~~~~~~~~~
-
-Log in to the ``Windows Jump Host`` (using credentials ``user:user``). Open ``Chrome``.
-Click the bookmark titled ``F5 App`` from the bookmarks bar.
-
-.. image:: /_static/2-1.png
-  :width: 400pt
-
-An F5 example application should load.
-
-
-
+.. _NGINX Plus Customer Portal: https://cs.nginx.com

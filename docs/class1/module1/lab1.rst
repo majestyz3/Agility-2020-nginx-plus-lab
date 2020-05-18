@@ -1,68 +1,73 @@
-Installing NGINX Plus
---------------------------------------
+Lab 1- – Join UDF Course
+---------------
 
-This exercise will cover installation of NGINX Plus in a standalone (CentOS7) instance.
-The UDF environment has three NGINX Plus instances -- Master, Plus2, and Plus3. 
-To save time NGINX Plus has been installed on Plus2 and Plus3. In this lab we will install NGINX Plus on Master.
+Welcome to NGINX – Intro to NGINX+ from BIG-IP! In this course we will:
 
-Repository Certificate and Key
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Typically, a customer would log into the `NGINX Plus Customer Portal`_ and download thier ``nginx-repo.crt`` and ``nginx-repo.key`` files. 
-These files are used to authenticate to the NGINX Plus repository in order to retrieve the NGINX Plus package for installation.  
-For this lab the necessary cert and key have already been provided on the instance in **/etc/ssl/nginx**.
+Explore how to utilize NGINX+
 
-Install NGINX Plus
-~~~~~~~~~~~~~~~~~~~~
+During this hands-on lab you will learn the following:
 
-.. note:: Execute this command from the NGINX Plus Master instance.
+•	How to install nginx plus. 
 
-.. warning:: Do not perform these steps from the UDF 'Web Shell'. Use a native terminal client or Putty from the Windows Jump Host.
+•	How to to use use nginx plus in parallel with your BIG-IP
 
-.. code:: shell
+•	How to use configure service discovery 
 
-  sudo yum install -y ca-certificates && \
-  sudo wget -P /etc/yum.repos.d https://cs.nginx.com/static/files/nginx-plus-7.repo && \
-  sudo yum install -y nginx-plus && \
-  sudo systemctl enable nginx.service && \
-  sudo systemctl start nginx.service
 
-These commands install Certificate Authorities certificates, download the repository information from the NGINX customer portal, and install the NGINX Plus package.
-The NGINX service is set to ``enable`` to start on boot. The last command starts the service. NGINX should be running at this time.
+This lab will go through initial setup and add you to NGINX – Intro to NGINX+ from BIG-IP 2020 workstation.  
 
-Verify NGINX Plus is running
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. note:: Execute these commands on the NGINX Plus Master instance.
+.. NOTE::
+    a  prerequisite for this exercise is having an RDP client on your machine such as remote desktop connection. 
+    If you do not have one, please download one, Some examples are  
+    
+    Remote desktop connection (macOS)
+    https://apps.apple.com/us/app/microsoft-remote-desktop/
 
-**Check the service status from systemd.**
+    Chrome browser RDP 
+    https://remotedesktop.google.com/
 
-.. code:: shell
+~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  systemctl status nginx
+Follow these steps to complete this lab:
 
-**Verify the output shows the service running:**
+**Exercise 1 - Setting Up Lab Workstation**
 
-.. code:: shell
 
-  ● nginx.service - NGINX Plus - high performance web server
-   Active: active (running) since Fri 2019-05-10 12:08:14 UTC; 2min 18s ago
+#. Open your web browser
+#. Navigate to https://udf.f5.com/courses
+#. login using your UDF credentials 
+#. go into courses tab 
+#. Click on the 'Details' tab within the Intro to NGINX+ from BIG-IP UDF block. You should see the following:
 
-**For an additional check, you should be able to curl to localhost port 80.**
+ (ADD THIS ONCE YOU LAUNCH CLASS TO MATCH WHAT STUDENT SEES)
+    .. image:: /_static/start.png
 
-.. code:: shell
+#. Click 'Start' to launch your workstation. 
 
-  curl http://localhost
+#. After your workstation is deployed, click the 'Components' tab:
 
-**Verify the output is the default NGINX placeholder page.**
+    .. image:: /_static/components.png
 
-.. code:: shell
+**Exercise 2 - RDP to Windows Jumphost**
 
-  # Content Removed
-  <h1>Welcome to nginx!</h1>
-  <p>If you see this page, the nginx web server is successfully installed and
-  working. Further configuration is required.</p>
-  # Content Removed
+In this exercise, we will connect to the Windows Jumphost.   
 
-NGINX Plus is now installed and running on the NGINX Plus Master instance.
+#. Under the 'Systems' column, locate the 'Jumphost' block. 
 
-.. _NGINX Plus Customer Portal: https://cs.nginx.com
+    .. image:: /_static/systems.png
+
+#. Click 'Access' -> 'RDP' and this will download a '.rdp' file to your local machine. 
+
+    .. image:: /_static/access.png
+
+
+#. Once the RDP has downloaded, open the .rdp file and when prompted, select 'continue'. 
+
+#. When prompted for the login credentials, use userename: admin: passsword:admin 
+
+    .. image:: /_static/loginrdp.jpg
+
+#. You should now be in your windows Jumphost. 
+
+    .. image:: /_static/windows.jpg

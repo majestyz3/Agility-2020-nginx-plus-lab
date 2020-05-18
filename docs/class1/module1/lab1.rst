@@ -1,20 +1,31 @@
 Lab 1- – Join UDF Course
 ---------------
 
-Welcome to the Nginx+ ! In this course we will:
+Welcome to NGINX – Intro to NGINX+ from BIG-IP! In this course we will:
 
-Explore F5 Telemetry Streaming, by using a declarative API model to forward, aggregate and analyze BIG-IP telemetry.
+Explore how to utilize NGINX+
 
 During this hands-on lab you will learn the following:
 
-•	How to use F5's declarative API to deploy applications via AS3. 
+•	How to install nginx plus. 
 
-•	How to use F5's declarative API to collect application statistics via Telemetry Streaming.
+•	How to to use use nginx plus in parallel with your BIG-IP
 
-•	How to use two data consumers to visualize statistics from Telemetry Streaming.
+•	How to use configure service discovery 
 
 
-This lab will go through initial setup and add you to the Telemetry Streaming Agility 2020 workstation.  
+This lab will go through initial setup and add you to NGINX – Intro to NGINX+ from BIG-IP 2020 workstation.  
+
+
+.. NOTE::
+    a  prerequisite for this exercise is having an RDP client on your machine such as remote desktop connection. 
+    If you do not have one, please download one, Some examples are  
+    
+    Remote desktop connection (macOS)
+    https://apps.apple.com/us/app/microsoft-remote-desktop/
+
+    Chrome browser RDP 
+    https://remotedesktop.google.com/
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -25,39 +36,38 @@ Follow these steps to complete this lab:
 
 #. Open your web browser
 #. Navigate to https://udf.f5.com/courses
-#. Select Telemetry Streaming Agility 2020. 
-#. Click on the 'Details' tab within the Telemetry Streaming Agility 2020 UDF block. You should see the following:
+#. login using your UDF credentials 
+#. go into courses tab 
+#. Click on the 'Details' tab within the Intro to NGINX+ from BIG-IP UDF block. You should see the following:
 
-    .. image:: ./start.jpg
+ (ADD THIS ONCE YOU LAUNCH CLASS TO MATCH WHAT STUDENT SEES)
+    .. image:: /_static/start.png
 
 #. Click 'Start' to launch your workstation. 
 
 #. After your workstation is deployed, click the 'Components' tab:
 
-    .. image:: ./components.jpg
+    .. image:: /_static/components.png
 
 **Exercise 2 - RDP to Windows Jumphost**
 
 In this exercise, we will connect to the Windows Jumphost.   
 
-#. Under the 'Systems' collumn, locate the 'Jumphost' block. 
+#. Under the 'Systems' column, locate the 'Jumphost' block. 
 
-    .. image:: ./systems.jpg
+    .. image:: /_static/systems.png
 
 #. Click 'Access' -> 'RDP' and this will download a '.rdp' file to your local machine. 
 
-    .. image:: ./access.jpg
+    .. image:: /_static/access.png
 
-#. Click 'Details' in the 'Jumphost' block and copy the administrator password. You will need this in the next step to access your RDP. 
-
-    .. image:: ./credentials.jpg
 
 #. Once the RDP has downloaded, open the .rdp file and when prompted, select 'continue'. 
 
-#. When prompted for the Administrator password, paste into the password field the password we copied from the previous step. 
+#. When prompted for the login credentials, use userename: admin: passsword:admin 
 
-    .. image:: ./loginrdp.jpg
+    .. image:: /_static/loginrdp.jpg
 
 #. You should now be in your windows Jumphost. 
 
-    .. image:: ./windows.jpg
+    .. image:: /_static/windows.jpg

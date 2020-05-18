@@ -1,68 +1,63 @@
-Installing NGINX Plus
---------------------------------------
+Lab 1- – Join UDF Course
+---------------
 
-This exercise will cover installation of NGINX Plus in a standalone (CentOS7) instance.
-The UDF environment has three NGINX Plus instances -- Master, Plus2, and Plus3. 
-To save time NGINX Plus has been installed on Plus2 and Plus3. In this lab we will install NGINX Plus on Master.
+Welcome to the Nginx+ ! In this course we will:
 
-Repository Certificate and Key
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Typically, a customer would log into the `NGINX Plus Customer Portal`_ and download thier ``nginx-repo.crt`` and ``nginx-repo.key`` files. 
-These files are used to authenticate to the NGINX Plus repository in order to retrieve the NGINX Plus package for installation.  
-For this lab the necessary cert and key have already been provided on the instance in **/etc/ssl/nginx**.
+Explore F5 Telemetry Streaming, by using a declarative API model to forward, aggregate and analyze BIG-IP telemetry.
 
-Install NGINX Plus
-~~~~~~~~~~~~~~~~~~~~
+During this hands-on lab you will learn the following:
 
-.. note:: Execute this command from the NGINX Plus Master instance.
+•	How to use F5's declarative API to deploy applications via AS3. 
 
-.. warning:: Do not perform these steps from the UDF 'Web Shell'. Use a native terminal client or Putty from the Windows Jump Host.
+•	How to use F5's declarative API to collect application statistics via Telemetry Streaming.
 
-.. code:: shell
+•	How to use two data consumers to visualize statistics from Telemetry Streaming.
 
-  sudo yum install -y ca-certificates && \
-  sudo wget -P /etc/yum.repos.d https://cs.nginx.com/static/files/nginx-plus-7.repo && \
-  sudo yum install -y nginx-plus && \
-  sudo systemctl enable nginx.service && \
-  sudo systemctl start nginx.service
 
-These commands install Certificate Authorities certificates, download the repository information from the NGINX customer portal, and install the NGINX Plus package.
-The NGINX service is set to ``enable`` to start on boot. The last command starts the service. NGINX should be running at this time.
+This lab will go through initial setup and add you to the Telemetry Streaming Agility 2020 workstation.  
 
-Verify NGINX Plus is running
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. note:: Execute these commands on the NGINX Plus Master instance.
+Follow these steps to complete this lab:
 
-**Check the service status from systemd.**
+**Exercise 1 - Setting Up Lab Workstation**
 
-.. code:: shell
 
-  systemctl status nginx
+#. Open your web browser
+#. Navigate to https://udf.f5.com/courses
+#. Select Telemetry Streaming Agility 2020. 
+#. Click on the 'Details' tab within the Telemetry Streaming Agility 2020 UDF block. You should see the following:
 
-**Verify the output shows the service running:**
+    .. image:: ./start.jpg
 
-.. code:: shell
+#. Click 'Start' to launch your workstation. 
 
-  ● nginx.service - NGINX Plus - high performance web server
-   Active: active (running) since Fri 2019-05-10 12:08:14 UTC; 2min 18s ago
+#. After your workstation is deployed, click the 'Components' tab:
 
-**For an additional check, you should be able to curl to localhost port 80.**
+    .. image:: ./components.jpg
 
-.. code:: shell
+**Exercise 2 - RDP to Windows Jumphost**
 
-  curl http://localhost
+In this exercise, we will connect to the Windows Jumphost.   
 
-**Verify the output is the default NGINX placeholder page.**
+#. Under the 'Systems' collumn, locate the 'Jumphost' block. 
 
-.. code:: shell
+    .. image:: ./systems.jpg
 
-  # Content Removed
-  <h1>Welcome to nginx!</h1>
-  <p>If you see this page, the nginx web server is successfully installed and
-  working. Further configuration is required.</p>
-  # Content Removed
+#. Click 'Access' -> 'RDP' and this will download a '.rdp' file to your local machine. 
 
-NGINX Plus is now installed and running on the NGINX Plus Master instance.
+    .. image:: ./access.jpg
 
-.. _NGINX Plus Customer Portal: https://cs.nginx.com
+#. Click 'Details' in the 'Jumphost' block and copy the administrator password. You will need this in the next step to access your RDP. 
+
+    .. image:: ./credentials.jpg
+
+#. Once the RDP has downloaded, open the .rdp file and when prompted, select 'continue'. 
+
+#. When prompted for the Administrator password, paste into the password field the password we copied from the previous step. 
+
+    .. image:: ./loginrdp.jpg
+
+#. You should now be in your windows Jumphost. 
+
+    .. image:: ./windows.jpg

@@ -1,43 +1,32 @@
-Dashboard and API Configuration
+Configure Zone Synchronization
 -----------------------------------------
 
-This lab walks through configuring the NGINX Plus Dashboard and API.
+Each NGINX instance in a cluster needs to be configured to listen and exchange data with other cluster members.
+Cluster configuration is performed in the ``stream`` context (note this command appends to ``/etc/nginx/nginx.conf``).
 
-**Deploy the API and dashboard configuration.**
-
-.. note:: Execute this command on the NGINX Plus Master instance.
+.. note:: Execute these steps on the NGINX Plus Master instance.
 
 .. code:: shell
+    
+    sudo bash -c 'cat >> /etc/nginx/nginx.conf' <<EOF
+    stream {
 
-    sudo bash -c 'cat > /etc/nginx/conf.d/labApi.conf' <<EOF
-    server {
-        listen 80;
-        server_name master.nginx-udf.internal;
+        server {
+        listen 9000;
 
-        location /api/ {
-            api write=on;
-        }
-
-        location = /dashboard.html {
-            root /usr/share/nginx/html;
-        }
-
-        # Redirect requests for pre-R14 dashboard
-        location /status.html {
-            return 301 /dashboard.html;
-        }
-
-        location /swagger-ui/ {
-            root /usr/share/nginx/html/;
-            index index.html;
+        zone_sync;
+        zone_sync_server master.nginx-udf.internal:9000;
+        zone_sync_server plus2.nginx-udf.internal:9000;
+        zone_sync_server plus3.nginx-udf.internal:9000;
         }
     }
     EOF
 
-.. note:: Reload the NGINX Configuration (``sudo nginx -t && sudo nginx -s reload``)
+.. note:: Restart the NGINX daemon for these changes to take effect (``sudo systemctl restart nginx``)
 
-Typically, the NGINX API is exposed on port 8080 and some form of authentication is configured.
-This lab uses a ``server_name`` directive and does not implement security.
+An NGINX Plus node will only discover other nodes and start sending updates when it first starts. 
+This configuration defines a TCP listener to be used for ``zone_sync``.
+Nginx Plus instances included in the cluster are defined with ``zone_sync_server`` directives (or with dns via ``resolve``).
 
 
-  
+

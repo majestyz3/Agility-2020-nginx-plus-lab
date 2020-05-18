@@ -5,10 +5,10 @@
 # ------------
 #
 # REQUIRED: Your class/lab name
-classname = "NGINX Plus ADC Lab"
+classname = "Agility 2020 NGINX Plus ADC Lab"
 
 # OPTIONAL: The URL to the GitHub Repository for this class
-github_repo = "https://github.com/kreynoldsf5/nginx-plus-adc-lab"
+github_repo = "https://github.com/majestyz3/Agility-2020-nginx-plus-adc-lab"
 
 # OPTIONAL: Google Analytics
 # googleanalytics_id = 'UA-85156643-4'

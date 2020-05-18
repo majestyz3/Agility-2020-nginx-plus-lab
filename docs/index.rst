@@ -8,10 +8,11 @@ Welcome
 
 .. |repoinfo|
 
-The goal of this lab is to introduce you to NGINX Plus. Subsequent use cases covered in this training use NGINX Plus as their foundational building block.
-This lab will survery NGINX Plus feature which differentiate the offering from NGINX open source.
+The goal of this lab is to familiarize BIG-IP users/engineers with core NGINX+ capabilities and operations, including where to use BIG-IP vs NGINX+ and how they complement each other. The lab will provide basic hands-on configuration concepts.
+Subsequent use cases covered in this training use NGINX Plus as their foundational building block.
+This lab will survey NGINX Plus feature which differentiate the offering from NGINX open source.
 
-The UDF Blueprint called **TTT NGINX+ Lab** will give you access to the following infrastructure: 
+The lab environment provided will give you access to the following infrastructure: 
 
 ===================        ==================  ==============================================
   System                    Hostname                        Description

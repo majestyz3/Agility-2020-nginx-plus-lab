@@ -1,37 +1,14 @@
-Scaling the Example Service
+Explore the Dashboard
 -----------------------------------------
 
-This lab tests service discovery by scaling the sd-demo service on the Docker Host.
+Use the provided bookmark on the Windows Jump Host to access the NGINX Plus Dashboard.
 
-Service Scaling
-~~~~~~~~~~~~~~~~~~~~
+.. image:: /_static/plusdashboard.png
 
-.. note:: Execute this command from the Docker Host instance.
+Explore each pane of the dashboard. Review the statistics available for:
 
-.. code:: shell
+- Server Zones
+- Upstreams
+- Caches
 
-    docker-compose -f ~/udf-nginx-plus-service-discovery/docker-compose.yml up -d --scale http=5
-
-The ``docker-compose`` command instructs docker to scale the ``http`` service to 5 instances.
-
-**Watch the "sd-demo" upstream in the dashboard.**
-
-.. image:: /_static/sd-upstream-full.png
-   :width: 500pt
-
-Scale the ``http`` service up or down as desired.
-
-Query the SRV Record
-~~~~~~~~~~~~~~~~~~~~
-
-In this example, NGINX Plus performs service discovery by querying the following records.
-
-**Query the SRV records manually.**
-
-.. note:: Execute these commands on the Docker Host or NGINX Plus Master instance.
-
-.. code:: shell
-
-    $ dig @docker.nginx-udf.internal -p 8600 http.service.consul ANY
-    $ dig @docker.nginx-udf.internal -p 8600 consul.node.dc1.consul
-
+.. note:: The cache may be in a warning state due to a low percentage of cache hits. If desired, refresh the ``F5 App`` several times with ``cache disabled`` in Chrome bring the percentage up.

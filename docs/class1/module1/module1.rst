@@ -1,7 +1,7 @@
-NGINX Plus Installation
+Join UDF course
 =====================================================================
 
-In this module you will learn how to install NGINX Plus.
+In this module you will join udf course and open your windows jumphost
 
 (5 minutes)
 

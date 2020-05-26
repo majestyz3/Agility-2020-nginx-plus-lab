@@ -16,6 +16,9 @@ github_repo = "https://github.com/majestyz3/Agility-2020-nginx-plus-adc-lab"
 #
 # END CONFIG
 # ----------
+import f5_sphinx_theme
+html_theme = 'f5_sphinx_theme'
+html_sidebars = {'**': ['searchbox.html', 'localtoc.html', 'globaltoc.html']}
 
 import os
 import sys

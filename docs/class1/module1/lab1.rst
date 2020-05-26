@@ -1,4 +1,4 @@
-Lab 1- – Join UDF Course
+Lab 1- Join UDF Course
 ---------------
 
 Welcome to NGINX – Intro to NGINX+ from BIG-IP! In this course we will:
@@ -66,8 +66,8 @@ In this exercise, we will connect to the Windows Jumphost.
 
 #. When prompted for the login credentials, use userename: admin: passsword:admin 
 
-    .. image:: /_static/loginrdp.jpg
+    .. image:: /_static/loginrdp.png
 
 #. You should now be in your windows Jumphost. 
 
-    .. image:: /_static/windows.jpg
+    .. image:: /_static/windows.png

@@ -16,10 +16,6 @@ github_repo = "https://github.com/majestyz3/Agility-2020-nginx-plus-adc-lab"
 #
 # END CONFIG
 # ----------
-import f5_sphinx_theme
-html_theme = 'f5_sphinx_theme'
-html_sidebars = {'**': ['searchbox.html', 'localtoc.html', 'globaltoc.html']}
-
 import os
 import sys
 import time
@@ -28,6 +24,7 @@ import pkgutil
 import string
 sys.path.insert(0, os.path.abspath('.'))
 import f5_sphinx_theme
+
 
 year = time.strftime("%Y")
 eventname = "F5 / NGINX %s Hands-on Lab Guide" % (year)
@@ -165,7 +162,7 @@ todo_include_todos = True
 
 html_theme = 'f5_sphinx_theme'
 html_theme_path = f5_sphinx_theme.get_html_theme_path()
-html_sidebars = {'**': ['searchbox.html', 'localtoc.html', 'globaltoc.html','relations.html']}
+html_sidebars = {'**': ['searchbox.html', 'localtoc.html', 'globaltoc.html']}
 html_theme_options = {
                         'site_name': 'Community Training Classes & Labs',
                         'next_prev_link': True

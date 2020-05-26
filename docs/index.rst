@@ -36,9 +36,10 @@ BIG-IP1                 ip-10-1-1-9             admin                     admin
 
 
 .. toctree::
-   :maxdepth: 1
-   :numbered:
+   :maxdepth: 2
    :caption: Contents:
    :glob:
-   
-   */*
+
+   class*/class*
+..   examples
+..   markdown

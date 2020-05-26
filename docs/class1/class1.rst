@@ -7,6 +7,8 @@ Expected time to complete: **1 hour**
 
 .. toctree::
    :maxdepth: 1
+   :numbered:
+   :caption: Contents:
    :glob:
-
-   module*/module*
+   
+   */*

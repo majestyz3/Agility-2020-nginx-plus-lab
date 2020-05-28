@@ -1,21 +1,17 @@
 Lab 1- Join UDF Course
 ---------------
 
-Welcome to NGINX – Intro to NGINX+ from BIG-IP! In this course we will:
+Welcome to NGINX – Intro to NGINX+ from BIG-IP! In this course we will learn the following:
 
-Explore how to utilize NGINX+
+•	How to install Nginx Plus. 
 
-During this hands-on lab you will learn the following:
+•   How to navigate and utilize the Nginx Plus dashboard and api
 
-•	How to install nginx plus. 
+•   how to shared memory zone synchronization
 
-•	How to to use use nginx plus in parallel with your BIG-IP
+•	How to use configure service discovery (optional lab)
 
-•	How to use configure service discovery 
-
-
-This lab will go through initial setup and add you to NGINX – Intro to NGINX+ from BIG-IP 2020 workstation.  
-
+This lab will go through initial setup and add you the agility class.  
 
 .. NOTE::
     a  prerequisite for this exercise is having an RDP client on your machine such as remote desktop connection. 
@@ -64,7 +60,7 @@ In this exercise, we will connect to the Windows Jumphost.
 
 #. Once the RDP has downloaded, open the .rdp file and when prompted, select 'continue'. 
 
-#. When prompted for the login credentials, use userename: admin: passsword:admin 
+#. When prompted for the login credentials, use username: user: password: user 
 
     .. image:: /_static/loginrdp.png
 

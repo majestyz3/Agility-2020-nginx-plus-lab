@@ -66,16 +66,16 @@ Add a cache
 
 .. note:: Reload the NGINX Configuration (``sudo nginx -t && sudo nginx -s reload``)
 
-This configurartion defines a ``proxy_cache_path`` directory on the local file system, a shared memory zone where hashed keys for cached items are stored, and an inactivity timeout.
+This configuration  defines a ``proxy_cache_path`` directory on the local file system, a shared memory zone where hashed keys for cached items are stored, and an inactivity timeout.
 The ``proxy_cache`` is referenced in the server block. Additionally, method for purging the cache (sending a request with an HTTP verb of ``PURGE``) is defined.
 
-Several methods for signaling a cache purge could be created -- a magic header, requests from a certian IP address, etc.
+Several methods for signaling a cache purge could be created -- a magic header, requests from a certain IP address, etc.
 In production usage, the ability to make a cache invalidating request should be protected in a suitable manner. This lab provides no security around cache invalidating requests.
 
 For lab purposes, this configuration adds the ``X-Proxy-Cache`` header to show cache hits, misses, and ignores.
-The configuration also instructs Nginx Plus to ignore ``Set-Cookie`` headers as thier presence will prevent caching.
+The configuration also instructs Nginx Plus to ignore ``Set-Cookie`` headers as there presence will prevent caching.
 
-Invalidating Cached items
+Invalidating Cached Items
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
 **Populate the cache.**

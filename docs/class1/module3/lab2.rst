@@ -33,10 +33,10 @@ Upstream Features: Selection Algorithm, Weight
 
 .. note:: Reload the NGINX Configuration (``sudo nginx -t && sudo nginx -s reload``)
 
-The basic declaration didn't specify a selection algorithm (ie. load balacing method) so Round Robin was used. 
+The basic declaration didn't specify a selection algorithm (ie. load balancing method) so Round Robin was used. 
 NGINX supports `Round Robin`_, `Hash`_, `IP Hash`_, and `Least Connections`_ selection algorithms. NGINX Plus adds the `Least Time`_ algorithm.
 
-``Weight`` is a similiar concept as ratio load balancing with F5 products.
+``Weight`` is a similar concept as ratio load balancing with F5 products.
 In this example, the container listening on port 8080 is weighted 5 times heavier than the other upstream servers. 
 
 **Verify the configuration.**
@@ -48,7 +48,7 @@ In this configuration, ``weight`` is enforced on a per-worker basis.
 Multiple Upstreams, Server Blocks, and a Shared Memory Zone
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-This lab will end up using several upstreams. In order to keep the configuration size managable, these will be stored in a separate file. 
+This lab will end up using several upstreams. In order to keep the configuration size manageable, these will be stored in a separate file. 
 
 .. note:: Execute these steps on the NGINX Plus Master instance.
 

@@ -1,0 +1,8 @@
+sphinxcontrib-addmetahtml
+GitPython
+#sphinxcontrib-spelling
+sphinxcontrib-nwdiag
+sphinxcontrib-blockdiag
+sphinxcontrib-seqdiag
+sphinxcontrib-actdiag
+f5-sphinx-theme 
